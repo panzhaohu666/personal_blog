@@ -11,7 +11,7 @@
         </h2>
     {% endif %}
 
-    {% for post in posts %}
+    {% for post in page_obj %}
     <article class="post-card">
         <div class="post-meta">
             {% if post.category %}
@@ -40,4 +40,16 @@
         <p>去<a href="{% url 'home' %}" style="color:var(--accent); font-weight:600; text-decoration:none;">管理后台</a>写一篇吧</p>
     </div>
     {% endfor %}
+
+    {% if page_obj.has_other_pages %}
+    <nav style="display:flex; justify-content:center; align-items:center; gap:10px; margin-top:30px; padding:20px 0;">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" style="color:var(--accent); text-decoration:none; padding:8px 18px; border:1px solid var(--line); border-radius:10px; font-size:14px; transition:all 0.18s ease;">← 上一页</a>
+        {% endif %}
+        <span style="color:var(--ink-soft); font-size:14px;">第 {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} 页</span>
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" style="color:var(--accent); text-decoration:none; padding:8px 18px; border:1px solid var(--line); border-radius:10px; font-size:14px; transition:all 0.18s ease;">下一页 →</a>
+        {% endif %}
+    </nav>
+    {% endif %}
 {% endblock %}

@@ -13,12 +13,16 @@
 - 📂 按分类筛选文章
 - 🏷️ 标签展示
 - 📱 响应式设计，手机/平板/桌面全适配
+- 🖼️ 图片上传
+- 📄 Markdown 渲染
+- 📖 分页
 
 ### 管理后台（需登录）
 - ✏️ 创建/编辑/删除文章
 - 📁 分类管理（增删）
 - 🏷️ 标签管理（增删）
 - 🔍 文章筛选搜索（按状态/分类/标题）
+- 🗑️ 删除确认
 - 🔐 修改密码 / 修改邮箱
 - 🎨 统一的暖色调设计语言
 
@@ -48,10 +52,13 @@ cp .env.example .env
 # 5. 数据库迁移
 python manage.py migrate
 
-# 6. 创建管理员账号
+# 6. 创建媒体文件目录
+mkdir media
+
+# 7. 创建管理员账号
 python manage.py createsuperuser
 
-# 7. 启动服务
+# 8. 启动服务
 python manage.py runserver
 ```
 
@@ -95,16 +102,6 @@ personal_web/
 | `/blog/manage/tags/` | 标签管理 | 需登录 |
 | `/blog/manage/system/` | 系统设置 | 需登录 |
 | `/logout/` | 退出登录 | 需登录 |
-
-## 免责声明
-
-本项目为个人博客系统，仅供学习和个人使用。部署到生产环境前请：
-
-- 使用强随机 `SECRET_KEY`
-- 将 `DEBUG` 设为 `False`
-- 配置 `ALLOWED_HOSTS`
-- 使用 PostgreSQL 替代 SQLite
-- 启用 HTTPS
 
 ## 免责声明
 

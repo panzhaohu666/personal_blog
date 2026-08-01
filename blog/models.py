@@ -61,6 +61,7 @@ class Post(models.Model):
         verbose_name='分类',
     )
     tags = models.ManyToManyField(Tag, blank=True, related_name='posts', verbose_name='标签')
+    image = models.ImageField('封面图片', upload_to='posts/%Y/%m/', blank=True, null=True)
     excerpt = models.TextField('摘要', max_length=500, blank=True)
     body = models.TextField('正文')
     status = models.CharField('状态', max_length=10, choices=STATUS_CHOICES, default='draft')

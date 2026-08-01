@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 · 页面不存在</title>
+    <style>
+        :root {
+            --bg: #F7F2E9;
+            --surface: #FFFDF8;
+            --ink: #2B2620;
+            --ink-soft: #5F5649;
+            --muted: #8E8375;
+            --line: #E9DFCE;
+            --accent: #B9812F;
+            --accent-deep: #8F5E1D;
+            --accent-soft: #F4E8D3;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
+            --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Songti SC", "Noto Serif SC", "STSong", serif;
+            --shadow-sm: 0 1px 3px rgba(64, 47, 26, 0.06);
+            --shadow-lg: 0 18px 44px rgba(64, 47, 26, 0.13);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font-sans);
+            background: radial-gradient(1100px 460px at 18% -12%, rgba(185, 129, 47, 0.08), transparent 62%), var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-font-smoothing: antialiased;
+        }
+        .error-card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 60px 50px;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            max-width: 480px;
+            width: 90%;
+        }
+        .error-card .code {
+            font-family: var(--font-serif);
+            font-size: 100px;
+            color: var(--accent-soft);
+            line-height: 1;
+            margin-bottom: 14px;
+        }
+        .error-card h1 {
+            font-family: var(--font-serif);
+            font-size: 28px;
+            color: var(--ink);
+            margin-bottom: 12px;
+        }
+        .error-card p {
+            font-size: 15px;
+            color: var(--ink-soft);
+            line-height: 1.7;
+            margin-bottom: 28px;
+        }
+        .error-card a {
+            display: inline-block;
+            background: var(--accent);
+            color: #FFFDF8;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s ease;
+        }
+        .error-card a:hover {
+            background: var(--accent-deep);
+        }
+    </style>
+</head>
+<body>
+    <div class="error-card">
+        <div class="code">404</div>
+        <h1>页面不存在</h1>
+        <p>你要找的页面可能已被删除、移动，或者从未存在过。</p>
+        <a href="{% url 'blog:post_list' %}">返回博客首页</a>
+    </div>
+</body>
+</html>

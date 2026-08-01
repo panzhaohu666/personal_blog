@@ -18,6 +18,7 @@ class PostForm(forms.ModelForm):
             'slug': 'URL 标识',
             'category': '分类',
             'tags': '标签',
+            'image': '封面图片',
             'excerpt': '摘要',
             'body': '正文',
             'status': '状态',

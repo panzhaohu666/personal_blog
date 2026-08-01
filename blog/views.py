@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.paginator import Paginator
 from django.db.models import Count, Q
 from .models import Post, Category, Tag
 from .forms import PostForm, CategoryForm, TagForm
@@ -37,9 +38,12 @@ def home(request):
 def post_list(request):
     """文章列表页"""
     posts = Post.objects.filter(status='published').select_related('category').prefetch_related('tags')
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     categories = Category.objects.annotate(post_count=Count('posts', filter=Q(posts__status='published')))
     context = {
-        'posts': posts,
+        'page_obj': page_obj,
         'categories': categories,
     }
     return render(request, 'blog/post_list.html', context)
@@ -60,9 +64,12 @@ def category_posts(request, slug):
     """按分类筛选文章"""
     category = get_object_or_404(Category, slug=slug)
     posts = Post.objects.filter(category=category, status='published')
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     categories = Category.objects.annotate(post_count=Count('posts', filter=Q(posts__status='published')))
     context = {
-        'posts': posts,
+        'page_obj': page_obj,
         'categories': categories,
         'current_category': category,
     }
@@ -89,8 +96,11 @@ def manage_posts(request):
         posts = posts.filter(title__icontains=search)
 
     categories = Category.objects.all()
+    paginator = Paginator(posts, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     context = {
-        'posts': posts,
+        'page_obj': page_obj,
         'categories': categories,
         'current_status': status,
         'current_category': category_id,
@@ -104,7 +114,7 @@ def manage_posts(request):
 def create_post(request):
     """创建新文章"""
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save()
             messages.success(request, f'文章「{post.title}」创建成功')
@@ -126,7 +136,7 @@ def edit_post(request, post_id):
     """编辑已有文章"""
     post = get_object_or_404(Post, id=post_id)
     if request.method == 'POST':
-        form = PostForm(request.POST, instance=post)
+        form = PostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
             form.save()
             messages.success(request, f'文章「{post.title}」更新成功')

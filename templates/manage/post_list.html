@@ -34,7 +34,7 @@
     </div>
 </form>
 
-{% if posts %}
+{% if page_obj %}
 <div class="table-wrapper">
     <table>
         <thead>
@@ -47,7 +47,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for post in posts %}
+            {% for post in page_obj %}
             <tr>
                 <td class="cell-title">{{ post.title }}</td>
                 <td>{% if post.category %}{{ post.category.name }}{% else %}<span style="color:var(--muted)">—</span>{% endif %}</td>
@@ -64,7 +64,7 @@
                         <a href="{% url 'blog:manage:edit_post' post.id %}" class="btn btn-outline btn-sm">编辑</a>
                         <form method="post" action="{% url 'blog:manage:delete_post' post.id %}">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-danger btn-sm">删除</button>
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('确定要删除吗？')">删除</button>
                         </form>
                     </div>
                 </td>
@@ -73,6 +73,22 @@
         </tbody>
     </table>
 </div>
+
+{% if page_obj.has_other_pages %}
+<nav style="display:flex; justify-content:center; align-items:center; gap:10px; margin-top:22px; padding:16px 0;">
+    {% if page_obj.has_previous %}
+    {% with params=request.GET.urlencode %}
+    <a href="?{% if params %}{{ params }}&{% endif %}page={{ page_obj.previous_page_number }}" style="color:var(--accent); text-decoration:none; padding:7px 16px; border:1px solid var(--line); border-radius:10px; font-size:13px;">← 上一页</a>
+    {% endwith %}
+    {% endif %}
+    <span style="color:var(--ink-soft); font-size:13px;">第 {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} 页</span>
+    {% if page_obj.has_next %}
+    {% with params=request.GET.urlencode %}
+    <a href="?{% if params %}{{ params }}&{% endif %}page={{ page_obj.next_page_number }}" style="color:var(--accent); text-decoration:none; padding:7px 16px; border:1px solid var(--line); border-radius:10px; font-size:13px;">下一页 →</a>
+    {% endwith %}
+    {% endif %}
+</nav>
+{% endif %}
 {% else %}
 <div class="empty-state">
     {% if current_status or current_category or current_search %}

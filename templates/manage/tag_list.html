@@ -44,7 +44,7 @@
                 <td>
                     <form method="post" action="{% url 'blog:manage:delete_tag' tag.id %}">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-danger btn-sm">删除</button>
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('确定要删除吗？')">删除</button>
                     </form>
                 </td>
             </tr>

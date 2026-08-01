@@ -12,6 +12,13 @@
         {% endif %}
         <time>{{ post.created_at|date:"Y-m-d H:i" }}</time>
     </div>
+
+    {% if post.image %}
+    <div style="margin-bottom:26px; border-radius:12px; overflow:hidden;">
+        <img src="{{ post.image.url }}" alt="{{ post.title }}" style="width:100%; height:auto; display:block;">
+    </div>
+    {% endif %}
+
     <div class="post-body">
         {{ post.body|linebreaks }}
     </div>
