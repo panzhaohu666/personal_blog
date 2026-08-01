@@ -15,6 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path, include
+from django.views.generic import TemplateView
 from blog import views
 
 urlpatterns = [
@@ -22,4 +23,5 @@ urlpatterns = [
     path('home/', views.home, name='home'),
     path('logout/', views.logout, name='logout'),
     path('blog/', include('blog.urls')),
+    path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain')),
 ]

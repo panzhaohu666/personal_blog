@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /manage/
+Disallow: /home/
+Disallow: /logout/
+
+Sitemap: https://your-domain.com/sitemap.xml

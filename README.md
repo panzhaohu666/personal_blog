@@ -1,5 +1,9 @@
 # 个人博客
 
+![Python](https://img.shields.io/badge/Python-3.12-blue)
+![Django](https://img.shields.io/badge/Django-6.0-green)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+
 基于 Django 构建的个人博客系统，自带美观的管理后台，无需依赖 Django Admin。
 
 ## 功能特性
@@ -101,6 +105,51 @@ personal_web/
 - 配置 `ALLOWED_HOSTS`
 - 使用 PostgreSQL 替代 SQLite
 - 启用 HTTPS
+
+## 免责声明
+
+本项目为个人博客系统，仅供学习和个人使用。部署到生产环境前请：
+
+- 使用强随机 `SECRET_KEY`
+- 将 `DEBUG` 设为 `False`
+- 配置 `ALLOWED_HOSTS`
+- 使用 PostgreSQL 替代 SQLite
+- 启用 HTTPS
+
+## 部署
+
+### 简易部署（Gunicorn + Nginx）
+
+```bash
+# 1. 安装依赖
+pip install gunicorn
+
+# 2. 收集静态文件
+python manage.py collectstatic --noinput
+
+# 3. 启动 Gunicorn
+gunicorn personal_web.wsgi:application --bind 0.0.0.0:8000 --workers 3
+
+# 4. Nginx 反向代理（/etc/nginx/sites-available/blog）
+# server {
+#     listen 80;
+#     server_name your-domain.com;
+#     location /static/  { alias /path/to/staticfiles/; }
+#     location / { proxy_pass http://127.0.0.1:8000; }
+# }
+```
+
+### 使用 Docker
+
+```dockerfile
+FROM python:3.12-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+RUN python manage.py collectstatic --noinput
+CMD ["gunicorn", "personal_web.wsgi:application", "--bind", "0.0.0.0:8000"]
+```
 
 ## License
 
