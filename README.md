@@ -92,6 +92,16 @@ personal_web/
 | `/blog/manage/system/` | 系统设置 | 需登录 |
 | `/logout/` | 退出登录 | 需登录 |
 
+## 免责声明
+
+本项目为个人博客系统，仅供学习和个人使用。部署到生产环境前请：
+
+- 使用强随机 `SECRET_KEY`
+- 将 `DEBUG` 设为 `False`
+- 配置 `ALLOWED_HOSTS`
+- 使用 PostgreSQL 替代 SQLite
+- 启用 HTTPS
+
 ## License
 
 MIT
