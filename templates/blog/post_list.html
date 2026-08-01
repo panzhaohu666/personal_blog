@@ -1,0 +1,43 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}
+    {% if current_category %}{{ current_category.name }} · {% endif %}个人博客
+{% endblock %}
+
+{% block content %}
+    {% if current_category %}
+        <h2 style="font-size:26px; font-family:var(--font-serif); color:var(--ink); margin-bottom:26px;">
+            分类：{{ current_category.name }}
+        </h2>
+    {% endif %}
+
+    {% for post in posts %}
+    <article class="post-card">
+        <div class="post-meta">
+            {% if post.category %}
+            {% if post.category.slug %}
+            <a href="{% url 'blog:category_posts' post.category.slug %}">{{ post.category.name }}</a>
+            {% else %}
+            {{ post.category.name }}
+            {% endif %}
+            &nbsp;·&nbsp;
+            {% endif %}
+            <time>{{ post.created_at|date:"Y-m-d" }}</time>
+        </div>
+        <h2><a href="{% url 'blog:post_detail' post.slug %}">{{ post.title }}</a></h2>
+        {% if post.excerpt %}
+        <p class="excerpt">{{ post.excerpt }}</p>
+        {% endif %}
+        <div class="tags">
+            {% for tag in post.tags.all %}
+            <span class="tag">{{ tag.name }}</span>
+            {% endfor %}
+        </div>
+    </article>
+    {% empty %}
+    <div class="empty">
+        <h2>还没有文章</h2>
+        <p>去<a href="{% url 'home' %}" style="color:var(--accent); font-weight:600; text-decoration:none;">管理后台</a>写一篇吧</p>
+    </div>
+    {% endfor %}
+{% endblock %}

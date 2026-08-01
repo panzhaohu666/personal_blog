@@ -1,0 +1,87 @@
+{% extends 'manage/base.html' %}
+{% block title %}文章管理{% endblock %}
+
+{% block manage_content %}
+<div class="page-header">
+    <h1>文章管理</h1>
+    <a href="{% url 'blog:manage:create_post' %}" class="btn btn-primary">✏️ 写新文章</a>
+</div>
+
+<form method="get" class="inline-form" style="margin-bottom:22px;">
+    <div class="form-row">
+        <div class="form-group" style="flex:0 0 140px;">
+            <select name="status" style="width:100%; padding:10px 12px; font-size:13px; font-family:var(--font-sans); color:var(--ink); background:#FDFBF7; border:1px solid var(--line); border-radius:10px;">
+                <option value="">全部状态</option>
+                <option value="published" {% if current_status == 'published' %}selected{% endif %}>已发布</option>
+                <option value="draft" {% if current_status == 'draft' %}selected{% endif %}>草稿</option>
+            </select>
+        </div>
+        <div class="form-group" style="flex:0 0 140px;">
+            <select name="category" style="width:100%; padding:10px 12px; font-size:13px; font-family:var(--font-sans); color:var(--ink); background:#FDFBF7; border:1px solid var(--line); border-radius:10px;">
+                <option value="">全部分类</option>
+                {% for cat in categories %}
+                <option value="{{ cat.id }}" {% if current_category == cat.id|stringformat:'s' %}selected{% endif %}>{{ cat.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group" style="flex:1;">
+            <input type="text" name="search" value="{{ current_search }}" placeholder="搜索文章标题..." style="width:100%; padding:10px 12px; font-size:13px; font-family:var(--font-sans); color:var(--ink); background:#FDFBF7; border:1px solid var(--line); border-radius:10px;">
+        </div>
+        <button type="submit" class="btn btn-primary" style="flex:0 0 auto;">筛选</button>
+        {% if current_status or current_category or current_search %}
+        <a href="{% url 'blog:manage:manage_posts' %}" class="btn btn-outline" style="flex:0 0 auto;">清除</a>
+        {% endif %}
+    </div>
+</form>
+
+{% if posts %}
+<div class="table-wrapper">
+    <table>
+        <thead>
+            <tr>
+                <th>标题</th>
+                <th>分类</th>
+                <th>状态</th>
+                <th>日期</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for post in posts %}
+            <tr>
+                <td class="cell-title">{{ post.title }}</td>
+                <td>{% if post.category %}{{ post.category.name }}{% else %}<span style="color:var(--muted)">—</span>{% endif %}</td>
+                <td>
+                    {% if post.status == 'published' %}
+                    <span class="badge badge-published">已发布</span>
+                    {% else %}
+                    <span class="badge badge-draft">草稿</span>
+                    {% endif %}
+                </td>
+                <td>{{ post.created_at|date:"Y-m-d" }}</td>
+                <td>
+                    <div class="actions">
+                        <a href="{% url 'blog:manage:edit_post' post.id %}" class="btn btn-outline btn-sm">编辑</a>
+                        <form method="post" action="{% url 'blog:manage:delete_post' post.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">删除</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state">
+    {% if current_status or current_category or current_search %}
+    <p>没有匹配的文章</p>
+    <a href="{% url 'blog:manage:manage_posts' %}" class="btn btn-outline">清除筛选</a>
+    {% else %}
+    <p>还没有任何文章</p>
+    <a href="{% url 'blog:manage:create_post' %}" class="btn btn-primary">写第一篇文章</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

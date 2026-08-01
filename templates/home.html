@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理后台 · 个人博客</title>
+    <style>
+        :root {
+            --bg: #F6F0E6;
+            --surface: #FFFDF8;
+            --ink: #2B2620;
+            --ink-soft: #5F5649;
+            --muted: #8E8375;
+            --line: #E9DFCE;
+            --accent: #B9812F;
+            --accent-deep: #8F5E1D;
+            --accent-soft: #F4E8D3;
+            --rust: #A94E2E;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
+            --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Songti SC", "Noto Serif SC", "STSong", serif;
+            --shadow-sm: 0 1px 2px rgba(64, 47, 26, 0.05);
+            --shadow-lg: 0 20px 48px rgba(64, 47, 26, 0.14);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            font-family: var(--font-sans);
+            background: var(--bg);
+            color: var(--ink);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 左侧边栏 */
+        .sidebar {
+            width: 248px;
+            background: linear-gradient(180deg, #302A23, #26211B);
+            color: #C6BBA9;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            box-shadow: 4px 0 24px rgba(38, 33, 27, 0.10);
+        }
+
+        .sidebar-header {
+            padding: 30px 26px 22px;
+            border-bottom: 1px solid rgba(255, 244, 224, 0.08);
+        }
+
+        .sidebar-header h2 {
+            font-family: var(--font-serif);
+            font-size: 21px;
+            color: #FBF6EC;
+            letter-spacing: 0.03em;
+        }
+
+        .sidebar-header span {
+            display: block;
+            font-size: 12px;
+            color: #8F8677;
+            margin-top: 5px;
+            letter-spacing: 0.08em;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 18px 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-nav .nav-label {
+            padding: 14px 26px 7px;
+            font-size: 11px;
+            color: #8F8677;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            font-weight: 600;
+        }
+
+        .sidebar-nav a {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 26px;
+            color: #BDB19E;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.18s ease, color 0.18s ease, padding-left 0.18s ease;
+        }
+
+        .sidebar-nav a:hover {
+            background: rgba(255, 244, 224, 0.06);
+            color: #F5EDDF;
+        }
+
+        .sidebar-nav a.active {
+            background: rgba(185, 129, 47, 0.16);
+            color: #E5B566;
+        }
+
+        .sidebar-nav a.active::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 8px;
+            bottom: 8px;
+            width: 3px;
+            border-radius: 0 3px 3px 0;
+            background: linear-gradient(180deg, var(--accent), var(--rust));
+        }
+
+        .sidebar-nav a .icon {
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            filter: saturate(0.85);
+            opacity: 0.9;
+            transition: filter 0.18s ease, opacity 0.18s ease;
+        }
+
+        .sidebar-nav a:hover .icon {
+            filter: none;
+            opacity: 1;
+        }
+
+        .sidebar-footer {
+            padding: 16px 26px;
+            border-top: 1px solid rgba(255, 244, 224, 0.08);
+        }
+
+        .sidebar-footer a {
+            color: #BDB19E;
+            text-decoration: none;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.18s ease, transform 0.18s ease;
+        }
+
+        .sidebar-footer a:hover {
+            color: #E5B566;
+            transform: translateX(2px);
+        }
+
+        /* 右侧主内容区 */
+        .main {
+            flex: 1;
+            margin-left: 248px;
+            padding: 40px 44px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 34px;
+        }
+
+        .top-bar h1 {
+            font-family: var(--font-serif);
+            font-size: 29px;
+            color: var(--ink);
+            letter-spacing: 0.02em;
+        }
+
+        .top-bar .user-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 14px;
+            color: var(--ink-soft);
+        }
+
+        .top-bar .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #C38B36, #9A6320);
+            color: #FFFDF8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            font-weight: 600;
+            box-shadow: 0 4px 14px rgba(154, 99, 32, 0.35), inset 0 0 0 2px rgba(255, 253, 248, 0.25);
+        }
+
+        /* 卡片区域 */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 26px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 28px;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: #E3D3B8;
+        }
+
+        .card .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 23px;
+            margin-bottom: 18px;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+        }
+
+        .card .card-icon.purple {
+            background: #F1E4E8;
+            color: #8A4B5C;
+        }
+
+        .card .card-icon.blue {
+            background: #E3ECE7;
+            color: #3F6B5C;
+        }
+
+        .card .card-icon.green {
+            background: #E9EFE2;
+            color: #5C7A3E;
+        }
+
+        .card .card-icon.orange {
+            background: #F6E9D0;
+            color: #B9812F;
+        }
+
+        .card h3 {
+            font-family: var(--font-serif);
+            font-size: 19px;
+            color: var(--ink);
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            font-size: 13.5px;
+            color: var(--muted);
+            line-height: 1.7;
+            margin-bottom: 22px;
+        }
+
+        .card a {
+            display: inline-block;
+            font-size: 13.5px;
+            color: var(--accent-deep);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.18s ease, transform 0.18s ease;
+        }
+
+        .card a:hover {
+            color: var(--accent);
+            transform: translateX(3px);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            text-decoration-color: var(--accent-soft);
+            text-decoration-thickness: 2px;
+        }
+
+        .card a:focus-visible,
+        .sidebar-nav a:focus-visible,
+        .sidebar-footer a:focus-visible {
+            outline: 3px solid var(--accent-soft);
+            outline-offset: 2px;
+        }
+
+        ::selection {
+            background: var(--accent-soft);
+            color: var(--accent-deep);
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: static;
+                width: 100%;
+                height: auto;
+                box-shadow: none;
+            }
+
+            .sidebar-header {
+                display: flex;
+                align-items: baseline;
+                gap: 10px;
+                padding: 18px 20px 14px;
+            }
+
+            .sidebar-header span {
+                margin-top: 0;
+            }
+
+            .sidebar-nav {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 4px;
+                padding: 8px;
+            }
+
+            .sidebar-nav .nav-label {
+                width: 100%;
+                padding: 8px 12px 2px;
+            }
+
+            .sidebar-nav a {
+                padding: 9px 14px;
+                border-radius: 10px;
+            }
+
+            .sidebar-nav a.active::before {
+                display: none;
+            }
+
+            .sidebar-nav a.active {
+                background: rgba(185, 129, 47, 0.22);
+            }
+
+            .sidebar-footer {
+                padding: 12px 20px;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 28px 18px;
+            }
+
+            .top-bar {
+                margin-bottom: 24px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>个人博客</h2>
+            <span>管理后台</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{% url 'home' %}" class="active">
+                <span class="icon">🏠</span> 工作台
+            </a>
+            <a href="{% url 'blog:manage:create_post' %}">
+                <span class="icon">✏️</span> 写文章
+            </a>
+            <a href="{% url 'blog:manage:manage_posts' %}">
+                <span class="icon">📄</span> 文章管理
+            </a>
+            <a href="{% url 'blog:manage:manage_categories' %}">
+                <span class="icon">📁</span> 分类管理
+            </a>
+            <a href="{% url 'blog:manage:manage_tags' %}">
+                <span class="icon">🏷️</span> 标签管理
+            </a>
+            <a href="{% url 'blog:manage:system' %}">
+                <span class="icon">⚙️</span> 系统管理
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="{% url 'blog:post_list' %}" target="_blank" style="color:#E5B566; margin-bottom:8px;">🌐 查看网站</a>
+            <a href="{% url 'logout' %}">🚪 退出登录</a>
+        </div>
+    </aside>
+
+    <!-- 主内容 -->
+    <main class="main">
+        <div class="top-bar">
+            <h1>工作台</h1>
+            <div class="user-info">
+                <span>{{ user.username }}</span>
+                <div class="user-avatar">{{ user.username|slice:":1"|upper }}</div>
+            </div>
+        </div>
+
+        <div class="cards">
+            <div class="card">
+                <div class="card-icon purple">✏️</div>
+                <h3>写文章</h3>
+                <p>创建一篇新的博客文章，支持 Markdown 格式</p>
+                <a href="{% url 'blog:manage:create_post' %}">开始写作 →</a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon blue">📋</div>
+                <h3>管理文章</h3>
+                <p>查看、编辑、发布或删除已有文章</p>
+                <a href="{% url 'blog:manage:manage_posts' %}">查看全部 →</a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon green">📁</div>
+                <h3>分类 & 标签</h3>
+                <p>管理文章的分类和标签</p>
+                <a href="{% url 'blog:manage:manage_categories' %}">管理分类 →</a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon orange">⚙️</div>
+                <h3>系统管理</h3>
+                <p>管理用户、站点设置等高级选项</p>
+                <a href="{% url 'blog:manage:system' %}">进入后台 →</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
