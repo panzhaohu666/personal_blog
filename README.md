@@ -36,15 +36,18 @@ python3 -m venv .venv
 source .venv/bin/activate
 
 # 3. 安装依赖
-pip install django
+pip install -r requirements.txt
 
-# 4. 数据库迁移
+# 4. 配置环境变量（复制 .env.example 为 .env 并修改）
+cp .env.example .env
+
+# 5. 数据库迁移
 python manage.py migrate
 
-# 5. 创建管理员账号
+# 6. 创建管理员账号
 python manage.py createsuperuser
 
-# 6. 启动服务
+# 7. 启动服务
 python manage.py runserver
 ```
 

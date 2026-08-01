@@ -22,7 +22,8 @@ venv/
 *.swp
 *.swo
 
-# OS
+# Environment
+.env
 .DS_Store
 Thumbs.db
 
