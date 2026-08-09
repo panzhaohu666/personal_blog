@@ -62,15 +62,18 @@ graph TB
 |------|------|------|
 | 仪表盘 | `/admin` | 总文章/已发布/访问量/分类标签统计卡片 |
 | 文章管理 | `/admin/posts` | 表格列表、状态筛选、搜索、删除确认 |
-| 文章编辑 | `/admin/posts/new` | **Markdown 编辑器**（实时预览）、分类/标签选择、图片上传、草稿/发布切换 |
+| 文章编辑 | `/admin/posts/new` | Markdown 编辑、分类/标签选择、图片上传、草稿/发布切换 |
 | 分类管理 | `/admin/categories` | 内联添加 + 表格 + 删除 |
 | 标签管理 | `/admin/tags` | 内联添加 + 表格 + 删除 |
-| 系统设置 | `/admin/system` | 修改邮箱 + 修改密码 |
+| 系统设置 | `/admin/system` | 显示当前邮箱 + 修改邮箱 + 修改密码 |
 
 ### 🎨 设计系统
 - 暖色调（amber/cream）：主色 `#B9812F`、背景 `#F7F2E9`、卡片 `#FFFDF8`
+- 暗色模式：🌙/☀️ 一键切换，localStorage 记忆，全页面适配
+- 文章卡片缩略图：左侧图片 + 右侧摘要布局
 - 衬线标题 + 无衬线正文，响应式适配移动端
 - shadcn/ui 组件库 + Tailwind CSS 4 原子化样式
+- 全站共用 SearchBar 组件，暗色模式自适应
 
 ## 🚀 快速开始
 
@@ -147,7 +150,7 @@ personal_web/
 │   │   │   ├── BlogPost.tsx          #   文章详情
 │   │   │   ├── Login.tsx             #   登录页
 │   │   │   └── admin/                #   管理后台（7 个页面）
-│   │   ├── components/               # shadcn/ui + blog 共享组件
+│   │   ├── components/               # 共享组件（ThemeToggle, SearchBar, shadcn/ui）
 │   │   ├── hooks/                    # TanStack Query v5 数据 hooks
 │   │   └── api/                      # axios 客户端（JWT 拦截器）
 │   └── e2e/                          # Playwright E2E 测试
