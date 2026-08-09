@@ -85,20 +85,20 @@ export default function AdminPostEditor() {
   return (
     <div className="max-w-3xl">
       <h1 className="mb-6 font-serif text-2xl font-bold text-[#2B2620]">{isEdit ? '编辑文章' : '写文章'}</h1>
-      {msg && <div className={`mb-4 rounded-lg p-3 text-sm ${msg.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}>{msg.text}</div>}
+      {msg && <div className={`mb-4 rounded-xl p-3 text-sm ${msg.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}>{msg.text}</div>}
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
           <label className="block mb-1 text-sm font-medium text-[#5F5649]">标题</label>
-          <input value={title} onChange={(e) => setTitle(e.target.value)} className="w-full rounded-lg border border-[#E9DFCE] bg-[#FFFDF8] px-4 py-2.5 text-sm focus:border-[#B9812F] focus:outline-none" placeholder="文章标题" />
+          <input value={title} onChange={(e) => setTitle(e.target.value)} className="w-full rounded-xl border border-[#E9DFCE] bg-[#FFFDF8] px-4 py-2.5 text-sm focus:border-[#B9812F] focus:outline-none" placeholder="文章标题" />
         </div>
         <div>
           <label className="block mb-1 text-sm font-medium text-[#5F5649]">URL 标识</label>
-          <input value={slug} onChange={(e) => setSlug(e.target.value)} className="w-full rounded-lg border border-[#E9DFCE] bg-[#FFFDF8] px-4 py-2.5 text-sm focus:border-[#B9812F] focus:outline-none" placeholder="留空自动生成" />
+          <input value={slug} onChange={(e) => setSlug(e.target.value)} className="w-full rounded-xl border border-[#E9DFCE] bg-[#FFFDF8] px-4 py-2.5 text-sm focus:border-[#B9812F] focus:outline-none" placeholder="留空自动生成" />
         </div>
         <div className="flex gap-4">
           <div className="flex-1">
             <label className="block mb-1 text-sm font-medium text-[#5F5649]">分类</label>
-            <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="w-full rounded-lg border border-[#E9DFCE] bg-[#FFFDF8] px-4 py-2.5 text-sm focus:border-[#B9812F] focus:outline-none">
+            <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="w-full rounded-xl border border-[#E9DFCE] bg-[#FFFDF8] px-4 py-2.5 text-sm focus:border-[#B9812F] focus:outline-none">
               <option value="">无分类</option>
               {categories?.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
@@ -124,27 +124,27 @@ export default function AdminPostEditor() {
         </div>
         <div>
           <label className="block mb-1 text-sm font-medium text-[#5F5649]">摘要</label>
-          <textarea value={excerpt} onChange={(e) => setExcerpt(e.target.value)} rows={2} className="w-full rounded-lg border border-[#E9DFCE] bg-[#FFFDF8] px-4 py-2.5 text-sm focus:border-[#B9812F] focus:outline-none" placeholder="可选" />
+          <textarea value={excerpt} onChange={(e) => setExcerpt(e.target.value)} rows={2} className="w-full rounded-xl border border-[#E9DFCE] bg-[#FFFDF8] px-4 py-2.5 text-sm focus:border-[#B9812F] focus:outline-none" placeholder="可选" />
         </div>
         <div>
           <label className="block mb-1 text-sm font-medium text-[#5F5649]">正文（Markdown）</label>
-          <textarea value={body} onChange={(e) => setBody(e.target.value)} rows={16} className="w-full rounded-lg border border-[#E9DFCE] bg-[#FFFDF8] px-4 py-2.5 text-sm font-mono leading-relaxed focus:border-[#B9812F] focus:outline-none" placeholder="支持 Markdown 格式..." />
+          <textarea value={body} onChange={(e) => setBody(e.target.value)} rows={16} className="w-full rounded-xl border border-[#E9DFCE] bg-[#FFFDF8] px-4 py-2.5 text-sm font-mono leading-relaxed focus:border-[#B9812F] focus:outline-none" placeholder="支持 Markdown 格式..." />
         </div>
         <div>
           <label className="block mb-1 text-sm font-medium text-[#5F5649]">封面图片</label>
           <input type="file" accept="image/*" onChange={handleUpload} className="text-sm text-[#5F5649]" />
           {imageUrl && (
             <div className="mt-2 flex items-center gap-2">
-              <img src={imageUrl} alt="preview" className="h-20 rounded-lg border object-cover" />
+              <img src={imageUrl} alt="preview" className="h-20 rounded-xl border object-cover" />
               <button type="button" onClick={() => setImageUrl('')} className="text-xs text-red-500 hover:underline">移除</button>
             </div>
           )}
         </div>
         <div className="flex gap-3 pt-4">
-          <button type="submit" disabled={saving} className="rounded-lg bg-[#B9812F] px-6 py-2.5 text-sm font-medium text-white hover:bg-[#8F5E1D] disabled:opacity-50">
+          <button type="submit" disabled={saving} className="rounded-xl bg-[#B9812F] px-6 py-2.5 text-sm font-medium text-white hover:bg-[#8F5E1D] disabled:opacity-50">
             {saving ? '保存中...' : (isEdit ? '更新' : '发布')}
           </button>
-          <button type="button" onClick={() => navigate('/admin/posts')} className="rounded-lg border border-[#E9DFCE] px-6 py-2.5 text-sm text-[#5F5649] hover:bg-[#F4E8D3]">取消</button>
+          <button type="button" onClick={() => navigate('/admin/posts')} className="rounded-xl border border-[#E9DFCE] px-6 py-2.5 text-sm text-[#5F5649] hover:bg-[#F4E8D3]">取消</button>
         </div>
       </form>
     </div>

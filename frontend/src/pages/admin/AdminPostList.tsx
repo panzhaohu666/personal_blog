@@ -34,12 +34,12 @@ export default function AdminPostList() {
     <div>
       <div className="mb-6 flex items-center justify-between">
         <h1 className="font-serif text-2xl font-bold text-[#2B2620]">文章管理</h1>
-        <Link to="/admin/posts/new" className="rounded-lg bg-[#B9812F] px-4 py-2 text-sm text-white hover:bg-[#8F5E1D]">+ 写文章</Link>
+        <Link to="/admin/posts/new" className="rounded-xl bg-[#B9812F] px-4 py-2 text-sm text-white hover:bg-[#8F5E1D]">+ 写文章</Link>
       </div>
-      {msg && <div className="mb-4 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700">{msg} <button onClick={() => setMsg(null)} className="ml-2 font-bold">×</button></div>}
+      {msg && <div className="mb-4 rounded-xl bg-green-50 px-4 py-3 text-sm text-green-700">{msg} <button onClick={() => setMsg(null)} className="ml-2 font-bold">×</button></div>}
       <form onSubmit={handleSearch} className="mb-4 flex gap-2">
-        <input name="q" defaultValue={search} placeholder="搜索文章标题..." className="flex-1 rounded-lg border border-[#E9DFCE] bg-[#FFFDF8] px-3 py-2 text-sm focus:border-[#B9812F] focus:outline-none" />
-        <button type="submit" className="rounded-lg border border-[#E9DFCE] px-4 py-2 text-sm text-[#5F5649] hover:bg-[#F4E8D3]">搜索</button>
+        <input name="q" defaultValue={search} placeholder="搜索文章标题..." className="flex-1 rounded-xl border border-[#E9DFCE] bg-[#FFFDF8] px-3 py-2 text-sm focus:border-[#B9812F] focus:outline-none" />
+        <button type="submit" className="rounded-xl border border-[#E9DFCE] px-4 py-2 text-sm text-[#5F5649] hover:bg-[#F4E8D3]">搜索</button>
       </form>
       {isLoading ? (
         <div className="p-10 text-center text-[#8E8375]">加载中...</div>
@@ -83,8 +83,8 @@ export default function AdminPostList() {
           <div className="w-full max-w-sm rounded-xl bg-[#FFFDF8] p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
             <p className="mb-4 text-[#2B2620]">确定要删除这篇文章吗？此操作不可撤销。</p>
             <div className="flex justify-end gap-2">
-              <button onClick={() => setConfirmId(null)} className="rounded-lg border border-[#E9DFCE] px-4 py-2 text-sm text-[#5F5649]">取消</button>
-              <button onClick={handleDelete} disabled={deletePost.isPending} className="rounded-lg bg-red-500 px-4 py-2 text-sm text-white hover:bg-red-600">删除</button>
+              <button onClick={() => setConfirmId(null)} className="rounded-xl border border-[#E9DFCE] px-4 py-2 text-sm text-[#5F5649]">取消</button>
+              <button onClick={handleDelete} disabled={deletePost.isPending} className="rounded-xl bg-red-500 px-4 py-2 text-sm text-white hover:bg-red-600">删除</button>
             </div>
           </div>
         </div>

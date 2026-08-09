@@ -34,21 +34,21 @@ export default function AdminSystem() {
   return (
     <div className="max-w-md space-y-8">
       <h1 className="font-serif text-2xl font-bold text-[#2B2620]">系统设置</h1>
-      {msg && <div className={`rounded-lg p-3 text-sm ${msg.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}>{msg.text}</div>}
+      {msg && <div className={`rounded-xl p-3 text-sm ${msg.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}>{msg.text}</div>}
       <form onSubmit={handleEmail} className="rounded-xl border border-[#E9DFCE] bg-[#FFFDF8] p-6">
         <h2 className="mb-4 font-serif text-lg font-bold text-[#2B2620]">修改邮箱</h2>
         <div className="flex flex-col gap-3">
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="新邮箱" className="rounded-lg border border-[#E9DFCE] bg-[#F7F2E9] px-3 py-2 text-sm focus:border-[#B9812F] focus:outline-none" />
-          <button type="submit" className="rounded-lg bg-[#B9812F] px-4 py-2 text-sm text-white hover:bg-[#8F5E1D] self-start">保存</button>
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="新邮箱" className="rounded-xl border border-[#E9DFCE] bg-[#F7F2E9] px-3 py-2 text-sm focus:border-[#B9812F] focus:outline-none" />
+          <button type="submit" className="rounded-xl bg-[#B9812F] px-4 py-2 text-sm text-white hover:bg-[#8F5E1D] self-start">保存</button>
         </div>
       </form>
       <form onSubmit={handlePassword} className="rounded-xl border border-[#E9DFCE] bg-[#FFFDF8] p-6">
         <h2 className="mb-4 font-serif text-lg font-bold text-[#2B2620]">修改密码</h2>
         <div className="flex flex-col gap-3">
-          <input type="password" value={oldPw} onChange={(e) => setOldPw(e.target.value)} placeholder="旧密码" className="rounded-lg border border-[#E9DFCE] bg-[#F7F2E9] px-3 py-2 text-sm focus:border-[#B9812F] focus:outline-none" />
-          <input type="password" value={newPw} onChange={(e) => setNewPw(e.target.value)} placeholder="新密码" className="rounded-lg border border-[#E9DFCE] bg-[#F7F2E9] px-3 py-2 text-sm focus:border-[#B9812F] focus:outline-none" />
-          <input type="password" value={confirmPw} onChange={(e) => setConfirmPw(e.target.value)} placeholder="确认新密码" className="rounded-lg border border-[#E9DFCE] bg-[#F7F2E9] px-3 py-2 text-sm focus:border-[#B9812F] focus:outline-none" />
-          <button type="submit" className="rounded-lg bg-[#B9812F] px-4 py-2 text-sm text-white hover:bg-[#8F5E1D] self-start">修改</button>
+          <input type="password" value={oldPw} onChange={(e) => setOldPw(e.target.value)} placeholder="旧密码" className="rounded-xl border border-[#E9DFCE] bg-[#F7F2E9] px-3 py-2 text-sm focus:border-[#B9812F] focus:outline-none" />
+          <input type="password" value={newPw} onChange={(e) => setNewPw(e.target.value)} placeholder="新密码" className="rounded-xl border border-[#E9DFCE] bg-[#F7F2E9] px-3 py-2 text-sm focus:border-[#B9812F] focus:outline-none" />
+          <input type="password" value={confirmPw} onChange={(e) => setConfirmPw(e.target.value)} placeholder="确认新密码" className="rounded-xl border border-[#E9DFCE] bg-[#F7F2E9] px-3 py-2 text-sm focus:border-[#B9812F] focus:outline-none" />
+          <button type="submit" className="rounded-xl bg-[#B9812F] px-4 py-2 text-sm text-white hover:bg-[#8F5E1D] self-start">修改</button>
         </div>
       </form>
     </div>

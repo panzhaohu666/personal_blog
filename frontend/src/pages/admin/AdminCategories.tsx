@@ -35,9 +35,9 @@ export default function AdminCategories() {
       <form onSubmit={handleAdd} className="mb-4 flex items-end gap-2">
         <div>
           <label className="block text-xs text-[#8E8375] mb-1">分类名称</label>
-          <input value={name} onChange={(e) => setName(e.target.value)} className="w-48 rounded-lg border border-[#E9DFCE] bg-[#FFFDF8] px-3 py-2 text-sm focus:border-[#B9812F] focus:outline-none" />
+          <input value={name} onChange={(e) => setName(e.target.value)} className="w-48 rounded-xl border border-[#E9DFCE] bg-[#FFFDF8] px-3 py-2 text-sm focus:border-[#B9812F] focus:outline-none" />
         </div>
-        <button type="button" onClick={() => handleAdd(new Event('submit') as any)} className="cursor-pointer rounded-lg bg-[#B9812F] px-4 py-2 text-sm text-white hover:bg-[#8F5E1D] disabled:opacity-50" disabled={createCat.isPending}>添加</button>
+        <button type="button" onClick={() => handleAdd(new Event('submit') as any)} className="cursor-pointer rounded-xl bg-[#B9812F] px-4 py-2 text-sm text-white hover:bg-[#8F5E1D] disabled:opacity-50" disabled={createCat.isPending}>添加</button>
       </form>
       {isLoading ? <p className="text-[#8E8375]">加载中...</p> : (
         <div className="overflow-x-auto rounded-xl border border-[#E9DFCE] bg-[#FFFDF8]">
@@ -62,8 +62,8 @@ export default function AdminCategories() {
           <div className="w-80 rounded-xl bg-[#FFFDF8] p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
             <p className="mb-4 text-sm">确定删除此分类？</p>
             <div className="flex justify-end gap-2">
-              <button onClick={() => setConfirmId(null)} className="rounded-lg border px-3 py-1.5 text-sm">取消</button>
-              <button onClick={handleDelete} className="rounded-lg bg-red-500 px-3 py-1.5 text-sm text-white">删除</button>
+              <button onClick={() => setConfirmId(null)} className="rounded-xl border px-3 py-1.5 text-sm">取消</button>
+              <button onClick={handleDelete} className="rounded-xl bg-red-500 px-3 py-1.5 text-sm text-white">删除</button>
             </div>
           </div>
         </div>
