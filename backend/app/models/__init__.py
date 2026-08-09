@@ -16,7 +16,7 @@ def make_slug(text: str) -> str:
 
     用法：
         make_slug("Hello World")   → "hello-world"
-        make_slug("你好世界")        → "a1b2c3d4"（UUID 前 8 位）
+        make_slug("你好世界")        → "a1b2c3d4e5f6"（UUID 前 12 位）
     """
     # Unicode 标准化 → 试图转 ASCII → 去掉非字母数字
     text = unicodedata.normalize("NFKD", text)
@@ -25,7 +25,7 @@ def make_slug(text: str) -> str:
     slug = re.sub(r"[-\s]+", "-", text)
     if slug:
         return slug
-    return str(uuid.uuid4())[:8]
+    return str(uuid.uuid4())[:12]
 
 
 # ── 导入所有模型（确保 Alembic autogenerate 可发现）───────────

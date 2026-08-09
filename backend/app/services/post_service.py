@@ -118,10 +118,7 @@ class PostService:
 
         # 标签过滤（按 slug）
         if tag:
-            stmt = (
-                stmt.join(Post.tags)
-                .where(Post.tags.any(Tag.slug == tag))
-            )
+            stmt = stmt.join(Post.tags).where(Tag.slug == tag)
 
         # 搜索（ILIKE 模糊匹配）
         if search:
