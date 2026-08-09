@@ -64,11 +64,12 @@ export default function BlogPostPage() {
         {post.tags && post.tags.length > 0 && (
           <div className="mt-10 flex flex-wrap gap-2 border-t border-[#E9DFCE] dark:border-gray-700 pt-6">
             {post.tags.map((tag) => (
-              <span key={tag.id} className="rounded-full bg-accent-soft dark:bg-amber-900/40 px-3 py-1 text-sm text-accent-deep dark:text-amber-300">{tag.name}</span>
+              <span key={tag.id} className="rounded-full bg-[#F4E8D3] dark:bg-amber-900/40 px-3 py-1 text-sm text-[#8F5E1D] dark:text-amber-300">{tag.name}</span>
             ))}
           </div>
         )}
       </article>
+      <footer className="border-t border-[#E9DFCE] dark:border-gray-700 py-8 text-center text-xs text-[#8E8375] dark:text-gray-500"><p>© {new Date().getFullYear()} 个人博客 · <a href="/blog/rss.xml" className="text-[#F26522] hover:underline">RSS 订阅</a></p></footer>
     </div>
   );
 }

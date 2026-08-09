@@ -95,6 +95,7 @@ export default function BlogCategoryPage() {
           )}
         </div>
       </div>
+      <footer className="border-t border-[#E9DFCE] dark:border-gray-700 mt-16 py-8 text-center text-xs text-[#8E8375] dark:text-gray-500"><p>© {new Date().getFullYear()} 个人博客 · <a href="/blog/rss.xml" className="text-[#F26522] hover:underline">RSS 订阅</a></p></footer>
     </div>
   );
 }
