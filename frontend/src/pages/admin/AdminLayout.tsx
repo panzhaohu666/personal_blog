@@ -25,7 +25,7 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#F7F2E9]">
+    <div className="flex h-screen overflow-hidden bg-[#F7F2E9] dark:bg-gray-900">
       {/* 移动端遮罩 */}
       {open && <div className="fixed inset-0 z-30 bg-black/40 lg:hidden" onClick={() => setOpen(false)} />}
       {/* 侧边栏 */}
@@ -53,7 +53,7 @@ export default function AdminLayout() {
       </aside>
       {/* 主内容 */}
       <div className="flex flex-1 flex-col">
-        <header className="flex items-center justify-between border-b border-[#E9DFCE] bg-[#FFFDF8] px-6 py-3">
+        <header className="flex items-center justify-between border-b border-[#E9DFCE] dark:border-gray-700 bg-[#FFFDF8] dark:bg-gray-800 px-6 py-3">
           <button onClick={() => setOpen(true)} className="rounded-lg p-1 text-[#5F5649] hover:bg-[#F4E8D3] lg:hidden">☰</button>
           <div className="ml-auto flex items-center gap-3">
             <ThemeToggle />
