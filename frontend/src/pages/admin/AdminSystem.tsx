@@ -1,8 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import apiClient from '@/api/client';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function AdminSystem() {
-  const [email, setEmail] = useState('');
+  const { user } = useAuth();
+  const [email, setEmail] = useState(user?.email || '');
+
+  useEffect(() => { if (user?.email) setEmail(user.email); }, [user?.email]);
   const [oldPw, setOldPw] = useState('');
   const [newPw, setNewPw] = useState('');
   const [confirmPw, setConfirmPw] = useState('');
@@ -37,6 +41,7 @@ export default function AdminSystem() {
       {msg && <div className={`rounded-xl p-3 text-sm ${msg.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}>{msg.text}</div>}
       <form onSubmit={handleEmail} className="rounded-xl border border-[#E9DFCE] dark:border-gray-700 bg-[#FFFDF8] dark:bg-gray-800 p-6">
         <h2 className="mb-4 font-serif text-lg font-bold text-[#2B2620] dark:text-gray-100">修改邮箱</h2>
+        <p className="mb-3 text-xs text-[#8E8375] dark:text-gray-400">当前邮箱：{user?.email || '未设置'}</p>
         <div className="flex flex-col gap-3">
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="新邮箱" className="rounded-xl border border-[#E9DFCE] dark:border-gray-700 bg-[#F7F2E9] dark:bg-gray-900 px-3 py-2 text-sm focus:border-[#B9812F] focus:outline-none" />
           <button type="submit" className="rounded-xl bg-[#B9812F] px-4 py-2 text-sm text-white hover:bg-[#8F5E1D] self-start">保存</button>
