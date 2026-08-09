@@ -40,9 +40,9 @@ export default function AdminCategories() {
         <button type="button" onClick={() => handleAdd(new Event('submit') as any)} className="cursor-pointer rounded-lg bg-[#B9812F] px-4 py-2 text-sm text-white hover:bg-[#8F5E1D] disabled:opacity-50" disabled={createCat.isPending}>添加</button>
       </form>
       {isLoading ? <p className="text-[#8E8375]">加载中...</p> : (
-        <div className="w-full max-w-md rounded-xl border border-[#E9DFCE] bg-[#FFFDF8]">
+        <div className="overflow-x-auto rounded-xl border border-[#E9DFCE] bg-[#FFFDF8]">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-[#E9DFCE] bg-[#F7F2E9]"><tr><th className="px-4 py-3">名称</th><th className="px-4 py-3">文章数</th><th className="px-4 py-3">操作</th></tr></thead>
+            <thead className="border-b border-[#E9DFCE] bg-[#F7F2E9]"><tr><th className="px-4 py-3 font-medium text-[#5F5649]">名称</th><th className="px-4 py-3 font-medium text-[#5F5649]">文章数</th><th className="px-4 py-3 font-medium text-[#5F5649]">操作</th></tr></thead>
             <tbody>
               {categories?.length === 0 ? <tr><td colSpan={3} className="px-4 py-8 text-center text-[#8E8375]">暂无分类</td></tr> :
                 categories?.map((cat) => (

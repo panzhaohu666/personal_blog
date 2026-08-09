@@ -19,8 +19,8 @@ export default function AdminTags() {
         <button type="submit" disabled={create.isPending} className="rounded-lg bg-[#B9812F] px-4 py-2 text-sm text-white hover:bg-[#8F5E1D]">添加</button>
       </form>
       {isLoading ? <p className="text-[#8E8375]">加载中...</p> : (
-        <div className="w-full max-w-md rounded-xl border border-[#E9DFCE] bg-[#FFFDF8]">
-          <table className="w-full text-left text-sm"><thead className="border-b border-[#E9DFCE] bg-[#F7F2E9]"><tr><th className="px-4 py-3">名称</th><th className="px-4 py-3">文章数</th><th className="px-4 py-3">操作</th></tr></thead>
+        <div className="overflow-x-auto rounded-xl border border-[#E9DFCE] bg-[#FFFDF8]">
+          <table className="w-full text-left text-sm"><thead className="border-b border-[#E9DFCE] bg-[#F7F2E9]"><tr><th className="px-4 py-3 font-medium text-[#5F5649]">名称</th><th className="px-4 py-3 font-medium text-[#5F5649]">文章数</th><th className="px-4 py-3 font-medium text-[#5F5649]">操作</th></tr></thead>
             <tbody>
               {tags?.length === 0 ? <tr><td colSpan={3} className="px-4 py-8 text-center text-[#8E8375]">暂无标签</td></tr> : tags?.map((tag) => (
                 <tr key={tag.id} className="border-b last:border-0"><td className="px-4 py-3 font-medium">{tag.name}</td><td className="px-4 py-3 text-[#8E8375]">{tag.post_count}</td><td className="px-4 py-3"><button onClick={() => setConfirmId(tag.id)} className="text-red-500 hover:underline text-xs">删除</button></td></tr>
