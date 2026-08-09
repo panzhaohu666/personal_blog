@@ -1,137 +1,66 @@
-/**
- * 登录页面（公开访问）
- * URL: /login
- *
- * 暖色系登录卡片：纸纹背景 + 琥珀渐变顶栏。
- * 登录成功后跳转回 ?redirect= 指定的页面（默认 /admin）。
- */
-import { useState, type FormEvent } from 'react';
-import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { getApiErrorDetail } from '@/lib/api-error';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 
 export default function LoginPage() {
-  const { login, isAuthenticated, isLoading } = useAuth();
+  const { login, isAuthenticated, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const redirectParam = searchParams.get('redirect');
-  // 仅允许站内相对路径，防止开放重定向
-  const redirect =
-    redirectParam !== null && redirectParam.startsWith('/')
-      ? redirectParam
-      : '/admin';
+  const redirect = searchParams.get('redirect') || '/admin';
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // 正在恢复登录状态：显示加载动画
-  if (isLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-bg-warm">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (isAuthenticated) navigate(redirect, { replace: true });
+  }, [isAuthenticated, navigate, redirect]);
 
-  // 已登录用户访问登录页：直接跳转目标页面
-  if (isAuthenticated) {
-    return <Navigate to={redirect} replace />;
-  }
+  if (authLoading) return <div className="flex h-screen items-center justify-center bg-[#F7F2E9] text-[#8E8375]">检查登录状态...</div>;
+  if (isAuthenticated) return null;
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError(null);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    if (!username || !password) { setError('请输入用户名和密码'); return; }
     setSubmitting(true);
     try {
-      await login({ username: username.trim(), password });
+      await login({ username, password });
       navigate(redirect, { replace: true });
-    } catch (err) {
-      setError(getApiErrorDetail(err, '登录失败，请检查用户名和密码'));
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : '登录失败';
+      setError(msg.includes('401') ? '用户名或密码错误' : msg);
     } finally {
       setSubmitting(false);
     }
-  }
+  };
 
   return (
-    <div
-      className="flex min-h-screen items-center justify-center bg-bg-warm px-4"
-      style={{
-        backgroundImage:
-          'radial-gradient(rgba(185, 129, 47, 0.07) 1px, transparent 1px)',
-        backgroundSize: '22px 22px',
-      }}
-    >
-      <div className="w-[400px] max-w-[92vw] overflow-hidden rounded-xl border border-border-default bg-bg-surface shadow-lg">
-        {/* 琥珀渐变顶栏 */}
-        <div className="h-2 bg-gradient-to-r from-gradient-from via-primary to-gradient-to" />
-
+    <div className="flex min-h-screen items-center justify-center bg-[#F7F2E9] px-4">
+      <div className="w-full max-w-sm overflow-hidden rounded-xl border border-[#E9DFCE] bg-[#FFFDF8] shadow-lg">
+        <div className="h-1.5 bg-gradient-to-r from-[#C38B36] to-[#9A6320]" />
         <div className="p-8">
-          <h1 className="text-center text-2xl font-bold tracking-wide text-text-primary">
-            个人博客
-          </h1>
-          <p className="mt-1 text-center text-sm text-text-muted">
-            管理后台登录
-          </p>
-
-          <form onSubmit={handleSubmit} className="mt-8 space-y-5" noValidate>
-            <div className="space-y-2">
-              <Label htmlFor="username">用户名</Label>
-              <Input
-                id="username"
-                name="username"
-                autoComplete="username"
-                placeholder="请输入用户名"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                autoFocus
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password">密码</Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                placeholder="请输入密码"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-
-            {error !== null && (
-              <div className="rounded-lg border border-error-border bg-error-bg px-4 py-3 text-sm text-danger">
-                {error}
-              </div>
-            )}
-
-            <Button
-              type="submit"
-              disabled={submitting || username.length === 0 || password.length === 0}
-              className="h-11 w-full bg-gradient-to-r from-gradient-from to-gradient-to text-[15px] font-semibold tracking-[0.3em] text-white shadow-md shadow-primary/25 hover:from-gradient-from-hover hover:to-gradient-to-hover disabled:opacity-60"
+          <h1 className="mb-2 text-center font-serif text-2xl font-bold text-[#2B2620]">个人博客</h1>
+          <p className="mb-6 text-center text-sm text-[#8E8375]">管理后台</p>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <input
+              type="text" value={username} onChange={(e) => setUsername(e.target.value)}
+              placeholder="用户名" autoFocus
+              className="rounded-lg border border-[#E9DFCE] bg-[#F7F2E9] px-4 py-2.5 text-sm focus:border-[#B9812F] focus:outline-none"
+            />
+            <input
+              type="password" value={password} onChange={(e) => setPassword(e.target.value)}
+              placeholder="密码"
+              className="rounded-lg border border-[#E9DFCE] bg-[#F7F2E9] px-4 py-2.5 text-sm focus:border-[#B9812F] focus:outline-none"
+            />
+            {error && <p className="rounded-lg bg-red-50 px-3 py-2 text-center text-sm text-red-600">{error}</p>}
+            <button type="submit" disabled={submitting}
+              className="rounded-lg bg-gradient-to-r from-[#C38B36] to-[#9A6320] py-2.5 text-sm font-semibold tracking-wider text-white hover:opacity-90 disabled:opacity-50"
             >
-              {submitting ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                '登 录'
-              )}
-            </Button>
+              {submitting ? '登录中...' : '登 录'}
+            </button>
           </form>
-
-          <p className="mt-6 text-center text-xs text-text-muted">
-            <Link to="/blog" className="underline-offset-2 hover:underline">
-              返回博客首页
-            </Link>
-          </p>
         </div>
       </div>
     </div>

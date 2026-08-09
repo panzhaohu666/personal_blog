@@ -2,7 +2,10 @@
 
 定义登录请求/响应、JWT token 载荷、用户信息等 schema。
 """
-from pydantic import BaseModel, EmailStr, Field
+from datetime import datetime
+from uuid import UUID
+
+from pydantic import BaseModel, EmailStr, Field, field_serializer
 
 
 class LoginRequest(BaseModel):

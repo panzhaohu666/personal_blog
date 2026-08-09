@@ -15,7 +15,7 @@ export function useCategories() {
       const { data } = await apiClient.get<Category[]>('/api/categories');
       return data;
     },
-    staleTime: 5 * 60 * 1000, // 5 分钟内不重新请求
+    staleTime: 0,
   });
 }
 
@@ -59,7 +59,7 @@ export function useTags() {
       const { data } = await apiClient.get<Tag[]>('/api/tags');
       return data;
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
   });
 }
 

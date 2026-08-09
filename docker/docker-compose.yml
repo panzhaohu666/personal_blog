@@ -15,7 +15,7 @@ services:
       POSTGRES_PASSWORD: blog_dev_password
       POSTGRES_DB: blog
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -33,7 +33,7 @@ services:
     container_name: blog-redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - "6380:6379"
     volumes:
       - redis_data:/data
     healthcheck:
@@ -61,7 +61,7 @@ services:
       DATABASE_URL: postgresql+asyncpg://blog:blog_dev_password@postgres:5432/blog
       REDIS_URL: redis://redis:6379/0
       SECRET_KEY: dev-secret-key-change-in-production
-      CORS_ORIGINS: http://localhost:5173
+      CORS_ORIGINS: '["http://localhost:5173"]'
       DEBUG: "true"
     depends_on:
       postgres:
@@ -86,7 +86,7 @@ services:
       - ../frontend:/app
       - /app/node_modules
     environment:
-      VITE_API_BASE_URL: http://localhost:8000
+      VITE_API_BASE_URL: ""
     depends_on:
       - backend
     command: npm run dev -- --host 0.0.0.0

@@ -56,7 +56,7 @@ def _post_to_summary(post: Post, view_count: int = 0) -> PostSummary:
         tags=tags_resp,
         excerpt=post.excerpt or "",
         image_url=post.image_url,
-        status=post.status.value,
+        status=post.status,
         created_at=post.created_at,  # type: ignore[arg-type]
         updated_at=post.updated_at,  # type: ignore[arg-type]
         view_count=view_count,
@@ -356,16 +356,15 @@ class PostService:
         else:
             post.tags = []
 
-        await db.flush()
-        await db.refresh(post, attribute_names=["category", "tags"])
-
-        # 获取 view count
+        # 在 flush 前构造响应（flush 后 ORM 属性过期会触发 MissingGreenlet）
         redis = await get_redis()
         key = PostService._view_key(post.id)
         vc_raw = await redis.get(key)
         view_count = int(vc_raw) if vc_raw else 0
-
         summary = _post_to_summary(post, view_count=view_count)
+
+        await db.flush()
+
         return PostDetail(
             id=summary.id,
             title=summary.title,

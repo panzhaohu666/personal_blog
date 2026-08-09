@@ -17,7 +17,7 @@ import type { ApiError } from '@/types';
 
 /** 后端 API 基础 URL，FastAPI 直接提供 /api/* 路由 */
 const BASE_URL: string =
-  import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000';
+  import.meta.env.VITE_API_BASE_URL || '';
 
 /**
  * 从 localStorage 读取 JWT access token

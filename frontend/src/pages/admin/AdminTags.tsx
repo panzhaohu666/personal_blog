@@ -1,230 +1,37 @@
-/**
- * 管理后台标签管理（需登录）
- * URL: /admin/tags
- *
- * 内联添加表单 + 标签表格（名称/文章数/操作）+ 删除确认 + 空状态。
- */
-import { useState, type FormEvent } from 'react';
-import { Inbox, TagPlus, Trash2 } from 'lucide-react';
-import {
-  useTags,
-  useCreateTag,
-  useDeleteTag,
-} from '@/hooks/useCategories';
-import type { Tag } from '@/types';
-import { getApiErrorDetail } from '@/lib/api-error';
-import { useAdminMessage } from './AdminLayout';
-import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { useState } from 'react';
+import { useTags, useCreateTag, useDeleteTag } from '@/hooks/useCategories';
 
 export default function AdminTags() {
-  const { showMessage } = useAdminMessage();
-  const { data: tags, isLoading } = useTags();
-  const createTag = useCreateTag();
-  const deleteTag = useDeleteTag();
-
+  const { data: tags, isLoading, refetch } = useTags();
+  const create = useCreateTag();
+  const del = useDeleteTag();
   const [name, setName] = useState('');
-  const [nameError, setNameError] = useState<string | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<Tag | null>(null);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
 
-  function handleAdd(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const trimmed = name.trim();
-    if (trimmed.length === 0) {
-      setNameError('请输入标签名称');
-      return;
-    }
-    if (trimmed.length > 50) {
-      setNameError('标签名称不能超过 50 字');
-      return;
-    }
-    setNameError(null);
-    createTag.mutate(
-      { name: trimmed },
-      {
-        onSuccess: () => {
-          setName('');
-          showMessage('success', `标签「${trimmed}」已创建`);
-        },
-        onError: (error) => {
-          showMessage('error', getApiErrorDetail(error, '创建标签失败'));
-        },
-      }
-    );
-  }
-
-  function confirmDelete() {
-    if (deleteTarget === null) return;
-    deleteTag.mutate(deleteTarget.id, {
-      onSuccess: () => {
-        showMessage('success', `标签「${deleteTarget.name}」已删除`);
-        setDeleteTarget(null);
-      },
-      onError: (error) => {
-        showMessage('error', getApiErrorDetail(error, '删除标签失败'));
-        setDeleteTarget(null);
-      },
-    });
-  }
+  const handleAdd = async (e: React.FormEvent) => { e.preventDefault(); if (!name.trim()) return; await create.mutateAsync({ name: name.trim() }); setName(''); refetch(); };
+  const handleDelete = async () => { if (!confirmId) return; await del.mutateAsync(confirmId); setConfirmId(null); refetch(); };
 
   return (
     <div>
-      <header className="mb-6">
-        <h1 className="font-serif text-2xl tracking-[0.02em] text-text-primary">
-          标签管理
-        </h1>
-        <p className="mt-1 text-sm text-text-muted">
-          共 {tags?.length ?? 0} 个标签
-        </p>
-      </header>
-
-      {/* 内联添加表单 */}
-      <form
-        onSubmit={handleAdd}
-        className="mb-6 flex flex-col gap-3 rounded-xl border border-border-default bg-bg-surface p-5 shadow-sm sm:flex-row sm:items-end"
-      >
-        <div className="flex-1 space-y-1.5">
-          <label
-            htmlFor="tag-name"
-            className="text-sm font-medium text-text-soft"
-          >
-            新标签名称
-          </label>
-          <Input
-            id="tag-name"
-            placeholder="例如：Python"
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-              if (nameError !== null) setNameError(null);
-            }}
-            aria-invalid={nameError !== null}
-          />
-          {nameError !== null && (
-            <p className="text-xs text-danger">{nameError}</p>
-          )}
-        </div>
-        <Button
-          type="submit"
-          disabled={createTag.isPending}
-          className="bg-primary-600 hover:bg-primary-700"
-        >
-          <TagPlus />
-          {createTag.isPending ? '添加中…' : '添加标签'}
-        </Button>
+      <h1 className="mb-6 font-serif text-2xl font-bold text-[#2B2620]">标签管理</h1>
+      <form onSubmit={handleAdd} className="mb-4 flex items-end gap-2">
+        <div><label className="block text-xs text-[#8E8375] mb-1">标签名称</label><input value={name} onChange={(e) => setName(e.target.value)} className="w-48 rounded-lg border border-[#E9DFCE] bg-[#FFFDF8] px-3 py-2 text-sm focus:border-[#B9812F] focus:outline-none" /></div>
+        <button type="submit" disabled={create.isPending} className="rounded-lg bg-[#B9812F] px-4 py-2 text-sm text-white hover:bg-[#8F5E1D]">添加</button>
       </form>
-
-      {/* 标签表格 */}
-      <div className="overflow-hidden rounded-2xl border border-border-default bg-bg-surface shadow-sm">
-        <Table>
-          <TableHeader>
-            <TableRow className="hover:bg-transparent">
-              <TableHead className="px-5 text-xs font-semibold tracking-wider text-text-muted uppercase">
-                名称
-              </TableHead>
-              <TableHead className="px-5 text-xs font-semibold tracking-wider text-text-muted uppercase">
-                文章数
-              </TableHead>
-              <TableHead className="px-5 text-right text-xs font-semibold tracking-wider text-text-muted uppercase">
-                操作
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {isLoading &&
-              Array.from({ length: 4 }, (_, i) => (
-                <TableRow key={`skeleton-${i}`}>
-                  <TableCell className="px-5 py-3">
-                    <div className="h-4 w-28 animate-pulse rounded bg-primary-100" />
-                  </TableCell>
-                  <TableCell className="px-5 py-3">
-                    <div className="h-4 w-10 animate-pulse rounded bg-primary-100" />
-                  </TableCell>
-                  <TableCell className="px-5 py-3" />
-                </TableRow>
+      {isLoading ? <p className="text-[#8E8375]">加载中...</p> : (
+        <div className="w-full max-w-md rounded-xl border border-[#E9DFCE] bg-[#FFFDF8]">
+          <table className="w-full text-left text-sm"><thead className="border-b border-[#E9DFCE] bg-[#F7F2E9]"><tr><th className="px-4 py-3">名称</th><th className="px-4 py-3">文章数</th><th className="px-4 py-3">操作</th></tr></thead>
+            <tbody>
+              {tags?.length === 0 ? <tr><td colSpan={3} className="px-4 py-8 text-center text-[#8E8375]">暂无标签</td></tr> : tags?.map((tag) => (
+                <tr key={tag.id} className="border-b last:border-0"><td className="px-4 py-3 font-medium">{tag.name}</td><td className="px-4 py-3 text-[#8E8375]">{tag.post_count}</td><td className="px-4 py-3"><button onClick={() => setConfirmId(tag.id)} className="text-red-500 hover:underline text-xs">删除</button></td></tr>
               ))}
-
-            {!isLoading && (tags ?? []).length === 0 && (
-              <TableRow>
-                <TableCell colSpan={3} className="px-5 py-14 text-center">
-                  <Inbox className="mx-auto size-10 text-text-muted" />
-                  <p className="mt-3 text-sm text-text-muted">暂无标签</p>
-                </TableCell>
-              </TableRow>
-            )}
-
-            {!isLoading &&
-              (tags ?? []).map((tag) => (
-                <TableRow key={tag.id}>
-                  <TableCell className="px-5 py-3 font-medium text-text-primary">
-                    {tag.name}
-                  </TableCell>
-                  <TableCell className="px-5 py-3 text-text-soft">
-                    {tag.post_count}
-                  </TableCell>
-                  <TableCell className="px-5 py-3">
-                    <div className="flex justify-end">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setDeleteTarget(tag)}
-                        className="text-danger hover:border-danger hover:bg-error-bg hover:text-danger"
-                      >
-                        <Trash2 />
-                        删除
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </div>
-
-      {/* 删除确认 */}
-      <Dialog
-        open={deleteTarget !== null}
-        onOpenChange={(open) => {
-          if (!open) setDeleteTarget(null);
-        }}
-      >
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>删除标签</DialogTitle>
-            <DialogDescription>
-              确定要删除标签「{deleteTarget?.name}」吗？文章与标签的关联将被移除。
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteTarget(null)}>
-              取消
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={confirmDelete}
-              disabled={deleteTag.isPending}
-            >
-              {deleteTag.isPending ? '删除中…' : '确认删除'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            </tbody>
+          </table>
+        </div>
+      )}
+      {confirmId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setConfirmId(null)}><div className="w-80 rounded-xl bg-[#FFFDF8] p-6 shadow-xl" onClick={(e) => e.stopPropagation()}><p className="mb-4 text-sm">确定删除此标签？</p><div className="flex justify-end gap-2"><button onClick={() => setConfirmId(null)} className="rounded-lg border px-3 py-1.5 text-sm">取消</button><button onClick={handleDelete} className="rounded-lg bg-red-500 px-3 py-1.5 text-sm text-white">删除</button></div></div></div>
+      )}
     </div>
   );
 }

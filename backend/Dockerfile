@@ -1,12 +1,26 @@
 # ── Dockerfile ──────────────────────────────────────────────────────
-# 多阶段构建，最小化最终镜像体积
-#
-# 构建：
-#   docker build -t personal-web-backend .
-# 运行：
-#   docker run -p 8000:8000 --env-file .env personal-web-backend
 
-# ── 阶段 1: 依赖安装 ────────────────────────────────────────────
+# ── 阶段 1: 开发模式（热重载）──────────────────────────────────
+FROM python:3.12-slim AS dev
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc libc6-dev libpq-dev curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# 安装 uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+
+COPY pyproject.toml uv.lock README.md ./
+RUN uv sync
+
+COPY . .
+
+EXPOSE 8000
+CMD ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+# ── 阶段 2: 生产依赖安装 ───────────────────────────────────────
 FROM python:3.12-slim AS builder
 
 WORKDIR /app

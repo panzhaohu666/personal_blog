@@ -1,22 +1,11 @@
-/**
- * 404 页面未找到
- * 当用户访问不存在的路由时显示
- */
+import { Link } from 'react-router-dom';
+
 export default function NotFoundPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[var(--color-bg-warm)]">
-      <div className="text-center">
-        <h1 className="text-6xl font-bold text-[var(--color-primary)]">404</h1>
-        <p className="mt-4 text-lg text-[var(--color-text-soft)]">
-          页面未找到
-        </p>
-        <a
-          href="/blog"
-          className="mt-6 inline-block rounded-md bg-[var(--color-primary)] px-6 py-2 text-white transition-colors hover:bg-[var(--color-primary-dark)]"
-        >
-          返回博客首页
-        </a>
-      </div>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[#F7F2E9] px-4 text-center">
+      <h1 className="font-serif text-8xl font-bold text-[#E9DFCE]">404</h1>
+      <p className="mt-4 text-lg text-[#5F5649]">页面不存在</p>
+      <Link to="/blog" className="mt-6 rounded-lg bg-[#B9812F] px-6 py-2.5 text-sm text-white hover:bg-[#8F5E1D]">返回首页</Link>
     </div>
   );
 }

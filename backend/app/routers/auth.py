@@ -150,7 +150,13 @@ async def me(
     current_user: User = Depends(get_current_user),
 ) -> UserResponse:
     """获取当前登录用户的基本信息（需有效 JWT）。"""
-    return UserResponse.model_validate(current_user)
+    return UserResponse(
+        id=str(current_user.id),
+        username=current_user.username,
+        email=current_user.email,
+        is_active=current_user.is_active,
+        created_at=current_user.created_at.isoformat(),
+    )
 
 
 @router.put(
@@ -205,4 +211,10 @@ async def change_email(
             detail=str(e),
         )
 
-    return UserResponse.model_validate(current_user)
+    return UserResponse(
+        id=str(current_user.id),
+        username=current_user.username,
+        email=current_user.email,
+        is_active=current_user.is_active,
+        created_at=current_user.created_at.isoformat(),
+    )

@@ -21,7 +21,11 @@ export default defineConfig({
     host: true, // 允许 Docker 外部访问
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',
+        target: 'http://backend:8000',
+        changeOrigin: true,
+      },
+      '/blog/rss.xml': {
+        target: 'http://backend:8000',
         changeOrigin: true,
       },
     },
