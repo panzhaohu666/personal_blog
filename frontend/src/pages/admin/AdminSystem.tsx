@@ -32,7 +32,7 @@ export default function AdminSystem() {
   };
 
   return (
-    <div className="max-w-6xl space-y-8">
+    <div className="space-y-8">
       <h1 className="font-serif text-2xl font-bold text-[#2B2620]">系统设置</h1>
       {msg && <div className={`rounded-xl p-3 text-sm ${msg.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}>{msg.text}</div>}
       <form onSubmit={handleEmail} className="rounded-xl border border-[#E9DFCE] bg-[#FFFDF8] p-6">

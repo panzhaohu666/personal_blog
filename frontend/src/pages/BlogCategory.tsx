@@ -35,7 +35,7 @@ export default function BlogCategoryPage() {
   return (
     <div className="min-h-screen bg-[#F7F2E9] dark:bg-gray-900 text-[#2B2620] dark:text-gray-100">
       <header className="sticky top-0 z-10 border-b border-[#E9DFCE] dark:border-gray-700 bg-[#F7F2E9]/90 dark:bg-gray-900/90 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
+        <div className="flex w-full items-center justify-between px-6 py-3">
           <Link to="/blog" className="font-serif text-xl font-bold text-[#2B2620] dark:text-gray-100">个人博客</Link>
           <div className="flex items-center gap-3">
             <a href="/blog/rss.xml" target="_blank" className="text-xs text-[#8E8375] dark:text-gray-400 hover:text-[#F26522] flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-[#F26522]" />RSS</a>
@@ -44,7 +44,7 @@ export default function BlogCategoryPage() {
           </div>
         </div>
       </header>
-      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-10 sm:px-6 lg:flex-row">
+      <div className="flex w-full flex-col gap-8 px-4 py-10 sm:px-6 lg:flex-row">
         <aside className="w-full shrink-0 lg:w-60">
           <div className="rounded-xl border border-[#E9DFCE] dark:border-gray-700 bg-[#FFFDF8] dark:bg-gray-800 p-5">
             <h3 className="font-serif font-bold text-[#2B2620] dark:text-gray-100">分类</h3>

@@ -5,7 +5,7 @@ export default function AdminDashboard() {
   const { data: stats, isLoading } = useStatsOverview();
 
   return (
-    <div className="max-w-6xl">
+    <div>
       <h1 className="mb-6 font-serif text-2xl font-bold text-[#2B2620]">工作台</h1>
       <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
         {isLoading ? (

@@ -24,7 +24,7 @@ export default function AdminPostList() {
   };
 
   return (
-    <div className="max-w-6xl">
+    <div>
       <div className="mb-6 flex items-center justify-between">
         <h1 className="font-serif text-2xl font-bold text-[#2B2620]">文章管理</h1>
         <Link to="/admin/posts/new" className="rounded-xl bg-[#B9812F] px-4 py-2 text-sm text-white hover:bg-[#8F5E1D]">+ 写文章</Link>
