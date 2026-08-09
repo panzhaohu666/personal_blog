@@ -69,8 +69,10 @@ export default function BlogCategoryPage() {
           ) : (
             <div className="flex flex-col gap-5">
               {data?.items.map((post) => (
-                <Link key={post.id} to={`/blog/post/${post.slug}`} className="rounded-xl border border-[#E9DFCE] dark:border-gray-700 bg-[#FFFDF8] dark:bg-gray-800 p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-                  <div className="mb-1 flex items-center gap-3 text-xs text-[#8E8375] dark:text-gray-400">
+                <Link key={post.id} to={`/blog/post/${post.slug}`} className="flex gap-5 rounded-xl border border-[#E9DFCE] dark:border-gray-700 bg-[#FFFDF8] dark:bg-gray-800 p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                  {post.image_url && <img src={post.image_url} alt="" className="hidden h-28 w-44 shrink-0 rounded-lg object-cover sm:block" />}
+                  <div className="min-w-0 flex-1">
+                    <div className="mb-1 flex items-center gap-3 text-xs text-[#8E8375] dark:text-gray-400">
                     {post.category && <span className="rounded-full bg-[#F4E8D3] dark:bg-amber-900/40 px-2.5 py-0.5 font-medium text-[#8F5E1D] dark:text-amber-300">{post.category.name}</span>}
                     <span>{fmtDate(post.created_at)}</span><span>· {estimateRead(post.excerpt || '')} 分钟</span>
                   </div>
@@ -79,6 +81,7 @@ export default function BlogCategoryPage() {
                   <div className="mt-3 flex flex-wrap items-center gap-2">
                     {post.tags?.map((tag) => <span key={tag.id} className="rounded-full bg-[#F4E8D3] dark:bg-amber-900/40 px-2.5 py-0.5 text-xs text-[#8F5E1D] dark:text-amber-300">{tag.name}</span>)}
                     <span className="ml-auto text-xs text-[#8E8375] dark:text-gray-500">{post.view_count} 阅读</span>
+                  </div>
                   </div>
                 </Link>
               ))}
