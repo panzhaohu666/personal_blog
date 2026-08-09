@@ -6,6 +6,8 @@
  */
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /**
  * 暖色调设计系统主题配置
  * 定义项目的颜色、字体、阴影等设计令牌
@@ -112,11 +114,13 @@ body {
   
   /* 暗色模式 */
   .dark body,
-  body.dark,
-  .dark #root,
-  #root.dark {
+  html.dark body,
+  html.dark {
     background-color: #111827;
     color: #e5e7eb;
+  }
+  html.dark #root {
+    background-color: #111827;
   }
 
   #root {
