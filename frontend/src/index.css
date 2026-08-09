@@ -13,6 +13,15 @@
  * 定义项目的颜色、字体、阴影等设计令牌
  */
 @theme {
+  /* === 快捷语义令牌（供 bg-surface, text-soft 等简写类名） === */
+  --color-warm: #F7F2E9;
+  --color-surface: #FFFDF8;
+  --color-soft: #5F5649;
+  --color-muted: #8E8375;
+  --color-line: #E9DFCE;
+  --color-accent-soft: #F4E8D3;
+  --color-accent-deep: #8F5E1D;
+
   /* === 主色调：琥珀金 === */
   --color-primary: #B9812F;
   --color-primary-dark: #8F5E1D;
