@@ -1,6 +1,7 @@
 import { Link, useSearchParams } from 'react-router-dom';
 import { usePosts } from '@/hooks/usePosts';
 import { useCategories } from '@/hooks/useCategories';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 function fmtDate(iso: string) {
   return new Date(iso).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -45,7 +46,7 @@ export default function BlogListPage() {
             <a href="/blog/rss.xml" target="_blank" className="text-xs text-muted hover:text-[#F26522] flex items-center gap-1" title="RSS 订阅">
               <span className="inline-block w-2.5 h-2.5 rounded-sm bg-[#F26522] mr-0.5" /> RSS
             </a>
-            <button onClick={() => { document.documentElement.classList.toggle('dark'); localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'; }} className="text-sm text-muted hover:text-primary">{typeof window !== 'undefined' && document.documentElement.classList.contains('dark') ? '☀️' : '🌙'}</button>
+            <ThemeToggle />
             <Link to="/login" className="text-sm text-muted hover:text-primary">管理</Link>
           </div>
         </div>

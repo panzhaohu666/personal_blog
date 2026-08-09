@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { usePost } from '@/hooks/usePosts';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 function readingTime(text: string): number {
   return Math.max(1, Math.ceil(text.replace(/[#*\->`~\n\s]/g, '').length / 400));
@@ -38,7 +39,10 @@ export default function BlogPostPage() {
       <header className="sticky top-0 z-10 border-b border-line dark:border-gray-700 bg-bg-warm/90 dark:bg-gray-900/90 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-3">
           <Link to="/blog" className="font-serif text-xl font-bold text-primary-text dark:text-gray-100">个人博客</Link>
-          <Link to="/blog" className="text-sm text-muted hover:text-primary">← 返回列表</Link>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <Link to="/blog" className="text-sm text-muted hover:text-primary">← 返回列表</Link>
+          </div>
         </div>
       </header>
       <article className="mx-auto max-w-3xl px-4 py-10 sm:px-6">

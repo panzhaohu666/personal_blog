@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const NAV = [
   { to: '/admin', label: '工作台' },
@@ -55,6 +56,7 @@ export default function AdminLayout() {
         <header className="flex items-center justify-between border-b border-[#E9DFCE] bg-[#FFFDF8] px-6 py-3">
           <button onClick={() => setOpen(true)} className="rounded-lg p-1 text-[#5F5649] hover:bg-[#F4E8D3] lg:hidden">☰</button>
           <div className="ml-auto flex items-center gap-3">
+            <ThemeToggle />
             <span className="text-sm text-[#5F5649]">{user?.username}</span>
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#C38B36] to-[#9A6320] text-sm font-bold text-white">{(user?.username || '?')[0].toUpperCase()}</div>
           </div>
