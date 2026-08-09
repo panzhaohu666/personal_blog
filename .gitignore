@@ -27,6 +27,24 @@ venv/
 .DS_Store
 Thumbs.db
 
+# Node.js / Frontend
+node_modules/
+frontend/dist/
+*.tsbuildinfo
+
+# Docker
+docker/postgres_data/
+docker/redis_data/
+
+# Coverage
+htmlcov/
+.coverage
+coverage.xml
+
+# OS
+.DS_Store
+Thumbs.db
+
 # OpenCode
 .codegraph
 .codegraph/

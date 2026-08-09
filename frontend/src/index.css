@@ -1,0 +1,224 @@
+/**
+ * 全局样式入口文件
+ * 使用 Tailwind CSS v4 的 CSS-first 配置方式
+ * 通过 @theme 块定义项目的设计令牌（design tokens）
+ * 暖色调（amber/cream）设计系统，与 Django 模板风格统一
+ */
+@import "tailwindcss";
+
+/**
+ * 暖色调设计系统主题配置
+ * 定义项目的颜色、字体、阴影等设计令牌
+ */
+@theme {
+  /* === 主色调：琥珀金 === */
+  --color-primary: #B9812F;
+  --color-primary-dark: #8F5E1D;
+  --color-primary-light: #F4E8D3;
+  --color-primary-50: #fef9f0;
+  --color-primary-100: #fdf3e1;
+  --color-primary-200: #F4E8D3;
+  --color-primary-300: #e0b872;
+  --color-primary-400: #c9983d;
+  --color-primary-500: #B9812F;
+  --color-primary-600: #9d6c28;
+  --color-primary-700: #8F5E1D;
+  --color-primary-800: #735014;
+  --color-primary-900: #5c4010;
+
+  /* === 背景色 === */
+  --color-bg-warm: #F7F2E9;       /* 页面暖色背景 */
+  --color-bg-surface: #FFFDF8;    /* 卡片/面板表面色 */
+
+  /* === 文字色 === */
+  --color-text-primary: #2B2620;   /* 主文字——近似黑棕 */
+  --color-text-soft: #5F5649;      /* 次要文字 */
+  --color-text-muted: #8E8375;     /* 辅助文字/占位符 */
+
+  /* === 边框色 === */
+  --color-border-default: #E9DFCE; /* 默认边框 */
+
+  /* === 语义色：成功 / 警示 / 危险 === */
+  --color-success-bg: #E9EFE2;     /* 成功徽章/消息背景 */
+  --color-success-text: #5C7A3E;   /* 成功徽章/消息文字 */
+  --color-warning-bg: #F6E9D0;     /* 草稿徽章背景 */
+  --color-warning-text: #8F5E1D;   /* 草稿徽章文字 */
+  --color-danger: #A94E2E;         /* 危险操作（删除/错误） */
+  --color-danger-hover: #C25D37;
+  --color-error-bg: #FCE4E2;       /* 错误消息/表单错误背景 */
+  --color-error-border: #F5C4B6;   /* 错误消息边框 */
+  --color-success-border: #D0E0BE; /* 成功消息边框 */
+  --color-sidebar-title: #FBF6EC;  /* 侧边栏品牌标题 */
+  --color-sidebar-hover: rgba(255, 244, 224, 0.06); /* 侧边栏悬停背景 */
+
+  /* === 主按钮琥珀渐变（沿袭 Django btn-primary） === */
+  --color-gradient-from: #C38B36;
+  --color-gradient-to: #9A6320;
+  --color-gradient-from-hover: #D4A045;
+  --color-gradient-to-hover: #A96E24;
+
+  /* === 管理后台侧边栏（深棕，沿袭 Django 后台） === */
+  --color-sidebar: #302A23;        /* 侧边栏主色 */
+  --color-sidebar-deep: #26211B;   /* 侧边栏渐变深色 */
+  --color-sidebar-ink: #C6BBA9;    /* 侧边栏正文文字 */
+  --color-sidebar-muted: #8F8677;  /* 侧边栏次要文字 */
+  --color-sidebar-bright: #E5B566; /* 侧边栏高亮（激活/悬停） */
+  --color-sidebar-line: rgba(255, 244, 224, 0.08); /* 侧边栏分隔线 */
+
+  /* === 字体族 === */
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Noto Sans SC', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas,
+    monospace;
+  --font-serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia,
+    'Songti SC', 'Noto Serif SC', 'STSong', serif;
+
+  /* === shadcn 语义令牌（映射到暖色设计系统） === */
+  --color-background: #F7F2E9;          /* 页面背景 */
+  --color-foreground: #2B2620;          /* 主文字 */
+  --color-card: #FFFDF8;                /* 卡片表面 */
+  --color-card-foreground: #2B2620;
+  --color-popover: #FFFDF8;
+  --color-popover-foreground: #2B2620;
+  --color-primary-foreground: #FFFDF8;  /* 琥珀底色上的米白文字 */
+  --color-secondary: #F4E8D3;           /* 浅琥珀 */
+  --color-secondary-foreground: #5C4010;
+  --color-muted: #F4E8D3;
+  --color-muted-foreground: #8E8375;
+  --color-accent: #F4E8D3;
+  --color-accent-foreground: #5C4010;
+  --color-destructive: #B4542F;         /* 暖砖红 */
+  --color-destructive-foreground: #FFFDF8;
+  --color-border: #E9DFCE;
+  --color-input: #E9DFCE;
+  --color-ring: #B9812F;
+
+  /* === 阴影（复刻 Django 模板 shadow-sm / shadow-lg） === */
+  --shadow-card: 0 1px 3px rgba(64, 47, 26, 0.06);
+  --shadow-card-hover: 0 18px 44px rgba(64, 47, 26, 0.13);
+}
+
+/**
+ * 全局基础样式
+ */
+body {
+  margin: 0;
+  background-color: var(--color-bg-warm);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* === Markdown 正文（@uiw/react-md-editor 预览）暖色化 === */
+.wmde-markdown {
+  background-color: transparent !important;
+  color: #3A332B;
+  font-size: 17px;
+  line-height: 2.05;
+  font-family: var(--font-sans);
+}
+
+.wmde-markdown h1,
+.wmde-markdown h2,
+.wmde-markdown h3,
+.wmde-markdown h4,
+.wmde-markdown h5,
+.wmde-markdown h6 {
+  font-family: var(--font-serif);
+  color: var(--color-text-primary);
+  font-weight: 700;
+  border-bottom: none;
+}
+
+.wmde-markdown h1 {
+  font-size: 26px;
+  margin-top: 40px;
+  margin-bottom: 18px;
+}
+
+.wmde-markdown h2 {
+  font-size: 22px;
+  margin-top: 34px;
+  margin-bottom: 14px;
+}
+
+.wmde-markdown h3 {
+  font-size: 19px;
+  margin-top: 28px;
+  margin-bottom: 10px;
+}
+
+.wmde-markdown p {
+  margin-bottom: 20px;
+}
+
+.wmde-markdown a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.wmde-markdown a:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.wmde-markdown blockquote {
+  color: var(--color-text-soft);
+  border-left: 3px solid var(--color-primary-300);
+  background: var(--color-primary-50);
+  padding: 12px 20px;
+  border-radius: 0 12px 12px 0;
+}
+
+.wmde-markdown code {
+  background: var(--color-primary-100);
+  color: var(--color-primary-800);
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 0.9em;
+}
+
+.wmde-markdown pre {
+  background: #2B2620;
+  border-radius: 12px;
+  padding: 18px 20px;
+}
+
+.wmde-markdown pre code {
+  background: transparent;
+  color: #F4E8D3;
+  padding: 0;
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+
+.wmde-markdown table {
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.wmde-markdown table tr {
+  background-color: transparent;
+  border-top: 1px solid var(--color-border-default);
+}
+
+.wmde-markdown table th,
+.wmde-markdown table td {
+  border: 1px solid var(--color-border-default);
+  padding: 8px 14px;
+}
+
+.wmde-markdown hr {
+  background-color: var(--color-border-default);
+  height: 1px;
+}
+
+.wmde-markdown img {
+  border-radius: 12px;
+}

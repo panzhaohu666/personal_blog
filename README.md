@@ -1,152 +1,117 @@
 # 个人博客
 
 ![Python](https://img.shields.io/badge/Python-3.12-blue)
-![Django](https://img.shields.io/badge/Django-6.0-green)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115-teal)
+![React](https://img.shields.io/badge/React-19-61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791)
+![Redis](https://img.shields.io/badge/Redis-7-DC382D)
+![Docker](https://img.shields.io/badge/Docker-✓-2496ED)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
-基于 Django 构建的个人博客系统，自带美观的管理后台，无需依赖 Django Admin。
+全栈个人博客系统：FastAPI 后端 + React 前端 + PostgreSQL + Redis + Docker。
 
-## 功能特性
+## 架构
 
-### 博客前端（公开访问）
-- 📝 文章列表展示，卡片式布局
-- 📂 按分类筛选文章
-- 🏷️ 标签展示
-- 📱 响应式设计，手机/平板/桌面全适配
-- 🖼️ 图片上传
-- 📄 Markdown 渲染
-- 📖 分页
+```mermaid
+graph TB
+    subgraph Docker["Docker Compose"]
+        N["Nginx :80"] --> F["React SPA"]
+        N --> B["FastAPI :8000"]
+        B --> P["PostgreSQL 16"]
+        B --> R["Redis 7"]
+    end
 
-### 管理后台（需登录）
-- ✏️ 创建/编辑/删除文章
-- 📁 分类管理（增删）
-- 🏷️ 标签管理（增删）
-- 🔍 文章筛选搜索（按状态/分类/标题）
-- 🗑️ 删除确认
-- 🔐 修改密码 / 修改邮箱
-- 🎨 统一的暖色调设计语言
+    subgraph Backend["FastAPI 后端"]
+        Auth["JWT 认证"] --> Posts["文章 CRUD"]
+        Posts --> Search["全文搜索<br/>ILIKE / tsvector"]
+        Posts --> Stats["访问统计<br/>(Redis 计数器)"]
+        Posts --> RSS["RSS 2.0"]
+    end
 
-### 技术栈
-- **后端**: Python 3.12 + Django 6.0
-- **数据库**: SQLite
-- **前端**: 原生 HTML/CSS（无框架依赖）
-- **认证**: Django Auth
+    subgraph Frontend["React 前端"]
+        Public["公开页面<br/>文章列表/详情/分类"] 
+        Admin["管理后台<br/>Markdown 编辑器/分类/标签/设置"]
+    end
+```
+
+## 技术栈
+
+| 层 | 技术 |
+|---|---|
+| 后端 | FastAPI (Python 3.12) + SQLAlchemy 2.0 async |
+| 数据库 | PostgreSQL 16 + Redis 7 |
+| 搜索 | ILIKE + tsvector 全文搜索 |
+| 认证 | JWT (access + refresh token rotation) |
+| 前端 | React 19 + TypeScript 6 + Vite |
+| UI | shadcn/ui + Tailwind CSS 4 |
+| 状态管理 | TanStack Query v5 |
+| 测试 | pytest + Playwright |
+| CI/CD | GitHub Actions |
+| 部署 | Docker Compose |
 
 ## 快速开始
 
 ```bash
-# 1. 克隆项目
-git clone https://github.com/panzhaohu666/personal_blog.git
-cd personal_blog
-
-# 2. 创建虚拟环境
-python3 -m venv .venv
-source .venv/bin/activate
-
-# 3. 安装依赖
-pip install -r requirements.txt
-
-# 4. 配置环境变量（复制 .env.example 为 .env 并修改）
+# Docker 开发环境
 cp .env.example .env
+docker compose -f docker/docker-compose.yml up -d
+docker compose -f docker/docker-compose.yml exec backend uv run alembic upgrade head
 
-# 5. 数据库迁移
-python manage.py migrate
-
-# 6. 创建媒体文件目录
-mkdir media
-
-# 7. 创建管理员账号
-python manage.py createsuperuser
-
-# 8. 启动服务
-python manage.py runserver
+# 访问
+# 前端: http://localhost:5173
+# API 文档: http://localhost:8000/api/docs
 ```
 
-打开 http://127.0.0.1:8000/ 登录后即可开始写文章。
-
-博客前端地址: http://127.0.0.1:8000/blog/
+```bash
+# 本地开发
+cd backend && uv sync && uv run uvicorn app.main:app --reload
+cd frontend && npm install && npm run dev
+```
 
 ## 项目结构
 
 ```
-personal_web/
-├── blog/                   # 博客应用
-│   ├── models.py           # 数据模型（文章、分类、标签）
-│   ├── views.py            # 视图函数（前端 + 后台）
-│   ├── forms.py            # 表单定义
-│   ├── urls.py             # 路由配置
-│   └── admin.py            # 注册模型
-├── personal_web/           # 项目配置
-│   ├── settings.py
-│   └── urls.py
-├── templates/              # 模板文件
-│   ├── blog/               # 博客前端模板
-│   ├── manage/             # 管理后台模板
-│   ├── login.html          # 登录页
-│   └── home.html           # 工作台
-├── manage.py
-└── db.sqlite3
+├── backend/app/          # FastAPI 后端
+│   ├── core/             # 配置、JWT、数据库、Redis
+│   ├── models/           # SQLAlchemy 模型
+│   ├── schemas/          # Pydantic 验证
+│   ├── routers/          # API 路由
+│   ├── services/         # 业务逻辑
+│   └── search/           # 搜索引擎
+├── frontend/src/         # React 前端
+│   ├── pages/            # 页面组件
+│   ├── components/       # UI 组件 + shadcn
+│   ├── hooks/            # React Query hooks
+│   └── api/              # API 客户端
+├── docker/               # Docker Compose
+├── scripts/              # 数据迁移/基准测试
+└── .github/workflows/    # CI/CD
 ```
 
-## 页面路由
+## 功能
 
-| URL | 页面 | 权限 |
-|-----|------|------|
-| `/` | 登录页 | 公开 |
-| `/home/` | 工作台 | 需登录 |
-| `/blog/` | 博客首页 | 公开 |
-| `/blog/post/<slug>/` | 文章详情 | 公开 |
-| `/blog/category/<slug>/` | 分类筛选 | 公开 |
-| `/blog/manage/posts/` | 文章管理 | 需登录 |
-| `/blog/manage/categories/` | 分类管理 | 需登录 |
-| `/blog/manage/tags/` | 标签管理 | 需登录 |
-| `/blog/manage/system/` | 系统设置 | 需登录 |
-| `/logout/` | 退出登录 | 需登录 |
+- 📝 Markdown 文章编辑与渲染
+- 🏷️ 分类/标签体系
+- 🔍 全文搜索（ILIKE + tsvector）
+- 📡 RSS 2.0 订阅
+- 📊 访问统计（Redis 计数器）
+- 🐳 Docker 一键部署
+- 🔐 JWT 认证 + Token 轮转
+- ✅ 集成测试 + E2E 测试
 
-## 免责声明
+## API 概要
 
-本项目为个人博客系统，仅供学习和个人使用。部署到生产环境前请：
+| Method | Path | Auth |
+|--------|------|------|
+| POST | `/api/auth/login` | - |
+| GET | `/api/posts` | - |
+| GET | `/api/posts/{slug}` | - |
+| POST | `/api/admin/posts` | JWT |
+| GET | `/blog/rss.xml` | - |
+| GET | `/api/stats/overview` | - |
 
-- 使用强随机 `SECRET_KEY`
-- 将 `DEBUG` 设为 `False`
-- 配置 `ALLOWED_HOSTS`
-- 使用 PostgreSQL 替代 SQLite
-- 启用 HTTPS
-
-## 部署
-
-### 简易部署（Gunicorn + Nginx）
-
-```bash
-# 1. 安装依赖
-pip install gunicorn
-
-# 2. 收集静态文件
-python manage.py collectstatic --noinput
-
-# 3. 启动 Gunicorn
-gunicorn personal_web.wsgi:application --bind 0.0.0.0:8000 --workers 3
-
-# 4. Nginx 反向代理（/etc/nginx/sites-available/blog）
-# server {
-#     listen 80;
-#     server_name your-domain.com;
-#     location /static/  { alias /path/to/staticfiles/; }
-#     location / { proxy_pass http://127.0.0.1:8000; }
-# }
-```
-
-### 使用 Docker
-
-```dockerfile
-FROM python:3.12-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-RUN python manage.py collectstatic --noinput
-CMD ["gunicorn", "personal_web.wsgi:application", "--bind", "0.0.0.0:8000"]
-```
+完整文档: http://localhost:8000/api/docs
 
 ## License
 
