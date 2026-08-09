@@ -38,16 +38,17 @@ export default function AdminPostList() {
           <table className="w-full text-left text-sm">
             <thead className="border-b border-[#E9DFCE] dark:border-gray-700 bg-[#F7F2E9] dark:bg-gray-900 text-[#5F5649] dark:text-gray-300">
               <tr>
-                <th className="px-4 py-3 font-medium">标题</th><th className="px-4 py-3 font-medium">分类</th><th className="px-4 py-3 font-medium">状态</th><th className="px-4 py-3 font-medium">日期</th><th className="px-4 py-3 font-medium">操作</th>
+                <th className="px-4 py-3 font-medium">标题</th><th className="px-4 py-3 font-medium w-20">封面</th><th className="px-4 py-3 font-medium">分类</th><th className="px-4 py-3 font-medium">状态</th><th className="px-4 py-3 font-medium">日期</th><th className="px-4 py-3 font-medium">操作</th>
               </tr>
             </thead>
             <tbody>
               {data?.items.length === 0 ? (
-                <tr><td colSpan={5} className="px-4 py-12 text-center text-[#8E8375] dark:text-gray-400">暂无文章</td></tr>
+                <tr><td colSpan={6} className="px-4 py-12 text-center text-[#8E8375] dark:text-gray-400">暂无文章</td></tr>
               ) : (
                 data?.items.map((post) => (
                   <tr key={post.id} className="border-b border-[#E9DFCE] dark:border-gray-700 last:border-0 hover:bg-[#F7F2E9] dark:hover:bg-gray-700">
                     <td className="px-4 py-3 font-medium text-[#2B2620] dark:text-gray-100">{post.title}</td>
+                    <td className="px-4 py-3">{post.image_url ? <img src={post.image_url} alt="" className="h-10 w-16 rounded object-cover" /> : <span className="text-[#8E8375] text-xs">-</span>}</td>
                     <td className="px-4 py-3 text-[#5F5649] dark:text-gray-300">{post.category?.name || '-'}</td>
                     <td className="px-4 py-3">
                       <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${post.status === 'published' ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' : 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300'}`}>
