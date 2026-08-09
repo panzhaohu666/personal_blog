@@ -36,6 +36,12 @@ async def get_current_user(
             detail="无效或过期的认证令牌",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    if payload.get("type") != "access":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="无效的令牌类型",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
     user_id: str | None = payload.get("sub")
     if user_id is None:

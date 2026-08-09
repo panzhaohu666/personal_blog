@@ -20,6 +20,7 @@ from typing import AsyncGenerator
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.core.config import get_settings
 from app.core.database import close_db, engine
@@ -38,6 +39,11 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         f"🚀 {settings.APP_NAME} v{settings.APP_VERSION} 启动中..."
     )
 
+    # 安全检查：SECRET_KEY 必须已设置
+    if not settings.SECRET_KEY.get_secret_value():
+        logger.critical("❌ SECRET_KEY 未设置！请在 .env 中配置 SECRET_KEY 后重试")
+        raise RuntimeError("SECRET_KEY is not set")
+
     # 验证数据库连接
     try:
         async with engine.connect() as conn:
@@ -46,7 +52,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
             )
         logger.info("✓ 数据库连接正常")
     except Exception as e:
-        logger.warning(f"⚠ 数据库连接失败: {e}")
+        logger.critical(f"❌ 数据库连接失败: {e}")
+        raise
 
     yield
 
@@ -85,6 +92,11 @@ app.add_middleware(
 async def health_check() -> JSONResponse:
     """健康检查端点，返回服务状态。"""
     return JSONResponse(content={"status": "ok"})
+
+
+# ── 静态文件 ──────────────────────────────────────────────────
+
+app.mount("/uploads", StaticFiles(directory="uploads/uploads"), name="uploads")
 
 
 # ── 路由注册 ────────────────────────────────────────────────

@@ -65,7 +65,7 @@ class Settings(BaseSettings):
     REDIS_MAX_CONNECTIONS: int = 10
 
     # ── JWT 认证 ──────────────────────────────────────────────
-    SECRET_KEY: SecretStr = SecretStr("change-me-to-a-random-secret-key")
+    SECRET_KEY: SecretStr = SecretStr("")
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7

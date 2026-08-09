@@ -15,12 +15,11 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, Request, status
-from sqlalchemy import select
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.core.security import decode_access_token
+from app.core.dependencies import get_current_user
 from app.models.user import User
 from app.schemas.auth import (
     ChangeEmailRequest,
@@ -33,61 +32,6 @@ from app.schemas.auth import (
 from app.services.auth_service import LoginService
 
 router = APIRouter()
-
-
-# ── JWT 依赖（可复用）───────────────────────────────────────────
-
-async def get_current_user(
-    request: Request,
-    session: AsyncSession = Depends(get_db),
-) -> User:
-    """手动提取 Bearer token → 验证 JWT → 返回当前用户 ORM 对象。
-
-    Raises:
-        HTTPException(401): token 缺失、无效、过期、或用户不存在/已禁用。
-    """
-    auth_header = request.headers.get("Authorization")
-    if not auth_header or not auth_header.startswith("Bearer "):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="未提供认证令牌",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-
-    token = auth_header[len("Bearer "):]
-
-    payload = decode_access_token(token)
-    if payload is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="令牌无效或已过期",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    if payload.get("type") != "access":
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="无效的令牌类型",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-
-    user_id = payload.get("sub")
-    if user_id is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="无效的令牌载荷",
-        )
-
-    result = await session.execute(
-        select(User).where(User.id == user_id)
-    )
-    user = result.scalar_one_or_none()
-    if user is None or not user.is_active:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="用户不存在或已禁用",
-        )
-
-    return user
 
 
 # ── 端点 ────────────────────────────────────────────────────────
