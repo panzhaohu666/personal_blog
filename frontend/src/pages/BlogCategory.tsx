@@ -37,6 +37,7 @@ export default function BlogCategoryPage() {
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
           <Link to="/blog" className="font-serif text-xl font-bold text-[#2B2620] dark:text-gray-100">个人博客</Link>
           <div className="flex items-center gap-3">
+            <a href="/blog/rss.xml" target="_blank" className="text-xs text-[#8E8375] dark:text-gray-400 hover:text-[#F26522] flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded-sm bg-[#F26522]" />RSS</a>
             <ThemeToggle />
             <Link to="/login" className="text-sm text-[#8E8375] dark:text-gray-400 hover:text-[#B9812F]">管理</Link>
           </div>
@@ -58,6 +59,10 @@ export default function BlogCategoryPage() {
         </aside>
         <div className="min-w-0 flex-1">
           <h1 className="mb-6 font-serif text-2xl font-bold text-[#2B2620] dark:text-gray-100">分类：{catName}</h1>
+          <form onSubmit={(e) => { e.preventDefault(); const q = (new FormData(e.currentTarget).get('q') as string).trim(); const next = new URLSearchParams(); if (q) next.set('search', q); setSearchParams(next, { replace: true }); }} className="mb-8 flex gap-2">
+            <input name="q" placeholder="搜索文章..." className="flex-1 rounded-xl border border-[#E9DFCE] dark:border-gray-600 bg-[#FFFDF8] dark:bg-gray-800 px-4 py-2 text-sm text-[#2B2620] dark:text-gray-100 focus:border-[#B9812F] focus:outline-none placeholder:text-[#8E8375]" />
+            <button type="submit" className="rounded-xl bg-[#B9812F] dark:bg-amber-600 px-5 py-2 text-sm text-white hover:bg-[#8F5E1D] dark:hover:bg-amber-500">搜索</button>
+          </form>
           {data && data.items.length === 0 ? (
             <div className="rounded-xl border border-[#E9DFCE] dark:border-gray-700 bg-[#FFFDF8] dark:bg-gray-800 p-16 text-center">
               <p className="text-lg text-[#5F5649] dark:text-gray-400">该分类下还没有文章</p>
