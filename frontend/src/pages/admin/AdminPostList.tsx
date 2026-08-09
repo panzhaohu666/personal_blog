@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAdminPosts, useDeletePost } from '@/hooks/usePosts';
+import { SearchBar } from '@/components/SearchBar';
 
 function fmtDate(iso: string) { return iso ? new Date(iso).toLocaleDateString('zh-CN') : ''; }
 
@@ -22,14 +23,6 @@ export default function AdminPostList() {
     } catch { setMsg('删除失败'); }
   };
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const q = (new FormData(e.currentTarget).get('q') as string).trim();
-    const next = new URLSearchParams();
-    if (q) next.set('search', q);
-    setSearchParams(next, { replace: true });
-  };
-
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
@@ -37,10 +30,7 @@ export default function AdminPostList() {
         <Link to="/admin/posts/new" className="rounded-xl bg-[#B9812F] px-4 py-2 text-sm text-white hover:bg-[#8F5E1D]">+ 写文章</Link>
       </div>
       {msg && <div className="mb-4 rounded-xl bg-green-50 px-4 py-3 text-sm text-green-700">{msg} <button onClick={() => setMsg(null)} className="ml-2 font-bold">×</button></div>}
-      <form onSubmit={handleSearch} className="mb-4 flex gap-2">
-        <input name="q" defaultValue={search} placeholder="搜索文章标题..." className="flex-1 rounded-xl border border-[#E9DFCE] bg-[#FFFDF8] px-3 py-2 text-sm focus:border-[#B9812F] focus:outline-none" />
-        <button type="submit" className="rounded-xl border border-[#E9DFCE] px-4 py-2 text-sm text-[#5F5649] hover:bg-[#F4E8D3]">搜索</button>
-      </form>
+      <SearchBar defaultValue={search} placeholder="搜索文章标题..." onSearch={(q) => { const next = new URLSearchParams(); if (q) next.set('search', q); setSearchParams(next, { replace: true }); }} className="mb-4" />
       {isLoading ? (
         <div className="p-10 text-center text-[#8E8375]">加载中...</div>
       ) : (

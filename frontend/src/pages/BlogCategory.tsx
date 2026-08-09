@@ -2,6 +2,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { usePosts } from '@/hooks/usePosts';
 import { useCategories } from '@/hooks/useCategories';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { SearchBar } from '@/components/SearchBar';
 
 function fmtDate(iso: string) {
   return new Date(iso).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -59,10 +60,7 @@ export default function BlogCategoryPage() {
         </aside>
         <div className="min-w-0 flex-1">
           <h1 className="mb-6 font-serif text-2xl font-bold text-[#2B2620] dark:text-gray-100">分类：{catName}</h1>
-          <form onSubmit={(e) => { e.preventDefault(); const q = (new FormData(e.currentTarget).get('q') as string).trim(); const next = new URLSearchParams(); if (q) next.set('search', q); setSearchParams(next, { replace: true }); }} className="mb-8 flex gap-2">
-            <input name="q" placeholder="搜索文章..." className="flex-1 rounded-xl border border-[#E9DFCE] dark:border-gray-600 bg-[#FFFDF8] dark:bg-gray-800 px-4 py-2 text-sm text-[#2B2620] dark:text-gray-100 focus:border-[#B9812F] focus:outline-none placeholder:text-[#8E8375]" />
-            <button type="submit" className="rounded-xl bg-[#B9812F] dark:bg-amber-600 px-5 py-2 text-sm text-white hover:bg-[#8F5E1D] dark:hover:bg-amber-500">搜索</button>
-          </form>
+          <SearchBar placeholder="搜索文章..." onSearch={(q) => { const next = new URLSearchParams(); if (q) next.set('search', q); setSearchParams(next, { replace: true }); }} className="mb-8" />
           {data && data.items.length === 0 ? (
             <div className="rounded-xl border border-[#E9DFCE] dark:border-gray-700 bg-[#FFFDF8] dark:bg-gray-800 p-16 text-center">
               <p className="text-lg text-[#5F5649] dark:text-gray-400">该分类下还没有文章</p>
