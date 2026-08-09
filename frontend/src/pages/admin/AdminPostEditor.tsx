@@ -83,7 +83,7 @@ export default function AdminPostEditor() {
   if (isEdit && loadingPost) return <div className="p-10 text-center text-[#8E8375]">加载文章...</div>;
 
   return (
-    <div className="max-w-3xl">
+    <div>
       <h1 className="mb-6 font-serif text-2xl font-bold text-[#2B2620]">{isEdit ? '编辑文章' : '写文章'}</h1>
       {msg && <div className={`mb-4 rounded-xl p-3 text-sm ${msg.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}>{msg.text}</div>}
       <form onSubmit={handleSubmit} className="space-y-5">
