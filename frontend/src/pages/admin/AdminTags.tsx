@@ -12,7 +12,7 @@ export default function AdminTags() {
   const handleDelete = async () => { if (!confirmId) return; await del.mutateAsync(confirmId); setConfirmId(null); refetch(); };
 
   return (
-    <div>
+    <div className="max-w-6xl">
       <h1 className="mb-6 font-serif text-2xl font-bold text-[#2B2620]">标签管理</h1>
       <form onSubmit={handleAdd} className="mb-4 flex items-end gap-2">
         <div><label className="block text-xs text-[#8E8375] mb-1">标签名称</label><input value={name} onChange={(e) => setName(e.target.value)} className="w-48 rounded-xl border border-[#E9DFCE] bg-[#FFFDF8] px-3 py-2 text-sm focus:border-[#B9812F] focus:outline-none" /></div>
