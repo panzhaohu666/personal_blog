@@ -20,7 +20,7 @@ export default function AdminPostList() {
     try {
       await deletePost.mutateAsync(confirmId);
       setMsg('文章已删除'); setConfirmId(null); refetch();
-    } catch { setMsg('删除失败'); }
+    } catch (err: any) { setMsg('删除失败: ' + (err?.response?.data?.detail || '请重试')); }
   };
 
   return (
@@ -29,7 +29,7 @@ export default function AdminPostList() {
         <h1 className="font-serif text-2xl font-bold text-[#2B2620] dark:text-gray-100">文章管理</h1>
         <Link to="/admin/posts/new" className="rounded-xl bg-[#B9812F] px-4 py-2 text-sm text-white hover:bg-[#8F5E1D]">+ 写文章</Link>
       </div>
-      {msg && <div className="mb-4 rounded-xl bg-green-50 px-4 py-3 text-sm text-green-700">{msg} <button onClick={() => setMsg(null)} className="ml-2 font-bold">×</button></div>}
+      {msg && <div className="mb-4 rounded-xl bg-green-50 dark:bg-green-900/40 px-4 py-3 text-sm text-green-700 dark:text-green-300">{msg} <button onClick={() => setMsg(null)} className="ml-2 font-bold">×</button></div>}
       <SearchBar defaultValue={search} placeholder="搜索文章标题..." onSearch={(q) => { const next = new URLSearchParams(); if (q) next.set('search', q); setSearchParams(next, { replace: true }); }} className="mb-4" />
       {isLoading ? (
         <div className="p-10 text-center text-[#8E8375] dark:text-gray-400">加载中...</div>
@@ -46,11 +46,11 @@ export default function AdminPostList() {
                 <tr><td colSpan={5} className="px-4 py-12 text-center text-[#8E8375] dark:text-gray-400">暂无文章</td></tr>
               ) : (
                 data?.items.map((post) => (
-                  <tr key={post.id} className="border-b border-[#E9DFCE] dark:border-gray-700 last:border-0 hover:bg-[#F7F2E9] dark:bg-gray-900">
+                  <tr key={post.id} className="border-b border-[#E9DFCE] dark:border-gray-700 last:border-0 hover:bg-[#F7F2E9] dark:hover:bg-gray-700">
                     <td className="px-4 py-3 font-medium text-[#2B2620] dark:text-gray-100">{post.title}</td>
                     <td className="px-4 py-3 text-[#5F5649] dark:text-gray-300">{post.category?.name || '-'}</td>
                     <td className="px-4 py-3">
-                      <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${post.status === 'published' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                      <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${post.status === 'published' ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' : 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300'}`}>
                         {post.status === 'published' ? '已发布' : '草稿'}
                       </span>
                     </td>
