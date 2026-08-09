@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 
 export default function LoginPage() {
@@ -61,6 +61,9 @@ export default function LoginPage() {
               {submitting ? '登录中...' : '登 录'}
             </button>
           </form>
+          <p className="mt-6 text-center text-sm">
+            <Link to="/blog" className="text-[#8E8375] hover:text-[#B9812F]">← 返回博客首页</Link>
+          </p>
         </div>
       </div>
     </div>
