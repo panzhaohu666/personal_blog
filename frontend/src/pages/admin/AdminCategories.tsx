@@ -28,9 +28,9 @@ export default function AdminCategories() {
       <h1 className="mb-6 font-serif text-2xl font-bold text-[#2B2620]">分类管理</h1>
       {msg && <p className="mb-3 text-sm text-red-500">{msg}</p>}
       <form onSubmit={handleAdd} className="mb-4 flex w-full items-end gap-2">
-        <div className="flex-1">
+        <div className="flex flex-1 flex-col">
           <label className="block text-xs text-[#8E8375] mb-1">分类名称</label>
-          <input value={name} onChange={(e) => setName(e.target.value)} className="flex-1 rounded-xl border border-[#E9DFCE] bg-[#FFFDF8] px-4 py-2 text-sm focus:border-[#B9812F] focus:outline-none" />
+          <input value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-xl border border-[#E9DFCE] bg-[#FFFDF8] px-4 py-2 text-sm focus:border-[#B9812F] focus:outline-none" />
         </div>
         <button type="submit" className="rounded-xl bg-[#B9812F] px-4 py-2 text-sm text-white hover:bg-[#8F5E1D]">添加</button>
       </form>
