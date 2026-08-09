@@ -102,17 +102,52 @@
  * 全局基础样式
  */
 body {
-  margin: 0;
-  background-color: var(--color-bg-warm);
-  color: var(--color-text-primary);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+    margin: 0;
+    background-color: var(--color-bg-warm);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* 暗色模式 */
+  .dark body,
+  body.dark,
+  .dark #root,
+  #root.dark {
+    background-color: #111827;
+    color: #e5e7eb;
+  }
 
-#root {
-  min-height: 100vh;
-}
+  #root {
+    min-height: 100vh;
+  }
+
+  /* react-markdown 正文样式 */
+  .markdown-body { font-size: 16px; line-height: 2; }
+  .markdown-body h1, .markdown-body h2, .markdown-body h3 { font-family: var(--font-serif); font-weight: 700; margin-top: 2em; margin-bottom: 0.8em; }
+  .markdown-body h1 { font-size: 1.75rem; }
+  .markdown-body h2 { font-size: 1.4rem; border-bottom: 1px solid var(--color-border-default); padding-bottom: 0.3em; }
+  .dark .markdown-body h2 { border-color: #374151; }
+  .markdown-body h3 { font-size: 1.15rem; }
+  .markdown-body p { margin-bottom: 1.2em; }
+  .markdown-body a { color: var(--color-primary); }
+  .markdown-body blockquote { border-left: 3px solid var(--color-primary); padding: 0.5em 1em; margin: 1em 0; color: var(--color-text-soft); background: var(--color-primary-50); border-radius: 0 8px 8px 0; }
+  .dark .markdown-body blockquote { background: #1f2937; color: #9ca3af; }
+  .markdown-body code { background: var(--color-primary-100); color: var(--color-primary-800); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+  .dark .markdown-body code { background: #1f2937; color: #fbbf24; }
+  .markdown-body pre { background: #1e1e1e; border-radius: 10px; padding: 16px 20px; overflow-x: auto; }
+  .markdown-body pre code { background: transparent; color: #e5e7eb; padding: 0; font-size: 0.85em; line-height: 1.7; }
+  .markdown-body img { border-radius: 10px; max-width: 100%; }
+  .markdown-body table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+  .markdown-body th, .markdown-body td { border: 1px solid var(--color-border-default); padding: 8px 12px; text-align: left; }
+  .dark .markdown-body th, .dark .markdown-body td { border-color: #374151; }
+  .markdown-body th { background: var(--color-primary-50); font-weight: 600; }
+  .dark .markdown-body th { background: #1f2937; }
+  .markdown-body ul, .markdown-body ol { padding-left: 1.5em; margin-bottom: 1em; }
+  .markdown-body li { margin-bottom: 0.3em; }
+  .markdown-body hr { border: none; border-top: 1px solid var(--color-border-default); margin: 2em 0; }
+  .dark .markdown-body hr { border-color: #374151; }
 
 /* === Markdown 正文（@uiw/react-md-editor 预览）暖色化 === */
 .wmde-markdown {
