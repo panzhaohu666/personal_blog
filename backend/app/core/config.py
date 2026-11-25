@@ -55,7 +55,7 @@ class Settings(BaseSettings):
 
     @computed_field
     @property
-    def SYNC_DATABASE_URL(self) -> str:
+    def sync_database_url(self) -> str:
         """从 DATABASE_URL 推导同步版本，供 Alembic 使用。"""
         url = self.DATABASE_URL.get_secret_value()
         return url.replace("+asyncpg", "") if "+asyncpg" in url else url

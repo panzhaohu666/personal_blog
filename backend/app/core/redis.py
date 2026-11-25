@@ -50,6 +50,7 @@ async def close_redis() -> None:
 
 # ── 便捷操作 ──────────────────────────────────────────────────
 
+
 async def cache_get(key: str) -> str | None:
     """从 Redis 读取缓存值。"""
     client = await get_redis()

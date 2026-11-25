@@ -11,8 +11,8 @@ from __future__ import annotations
 import pytest
 from httpx import AsyncClient
 
-
 # ── GET /api/stats/overview ─────────────────────────────────────
+
 
 @pytest.mark.asyncio
 async def test_stats_overview_empty(client: AsyncClient) -> None:
@@ -28,9 +28,7 @@ async def test_stats_overview_empty(client: AsyncClient) -> None:
 
 
 @pytest.mark.asyncio
-async def test_stats_overview_with_data(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_stats_overview_with_data(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """创建文章和分类标签后总览应反映正确的计数。"""
     # 创建分类和标签
     await client.post(
@@ -89,10 +87,9 @@ async def test_stats_overview_with_data(
 
 # ── GET /api/stats/posts/{id} ──────────────────────────────────
 
+
 @pytest.mark.asyncio
-async def test_post_stats(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_post_stats(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """获取单篇文章统计应返回正确的文章信息。"""
     create_resp = await client.post(
         "/api/admin/posts",
@@ -118,7 +115,5 @@ async def test_post_stats(
 @pytest.mark.asyncio
 async def test_post_stats_not_found(client: AsyncClient) -> None:
     """获取不存在文章的统计应返回 404。"""
-    response = await client.get(
-        "/api/stats/posts/00000000-0000-0000-0000-000000000000"
-    )
+    response = await client.get("/api/stats/posts/00000000-0000-0000-0000-000000000000")
     assert response.status_code == 404

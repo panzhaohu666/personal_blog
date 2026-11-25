@@ -58,12 +58,15 @@ async_session_factory = async_sessionmaker(
 
 # ── 声明式基类 ────────────────────────────────────────────────
 
+
 class Base(DeclarativeBase):
     """ORM 声明式基类，所有模型继承自此。"""
+
     pass
 
 
 # ── 依赖注入 ──────────────────────────────────────────────────
+
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """FastAPI 依赖：获取数据库会话，请求结束后自动关闭。"""

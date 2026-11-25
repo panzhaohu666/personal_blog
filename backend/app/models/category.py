@@ -2,15 +2,21 @@
 文章分类数据模型
 """
 
+# pyright: reportImportCycles=false
+
 from __future__ import annotations
 
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import DateTime, Integer, String, event, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
-from app.models import make_slug
+from app.models.slug import make_slug
+
+if TYPE_CHECKING:
+    from app.models.post import Post
 
 
 class Category(Base):
@@ -26,7 +32,7 @@ class Category(Base):
     )
 
     # 反向关系（由 Post.category 的 back_populates 配对）
-    posts: Mapped[list["Post"]] = relationship(  # noqa: F821
+    posts: Mapped[list[Post]] = relationship(
         back_populates="category",
     )
 

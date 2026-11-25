@@ -43,7 +43,9 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import uuid as _uuid_mod
 from datetime import datetime as _datetime
 from functools import wraps
-from sqlalchemy.dialects.postgresql import TSVECTOR, UUID as PgUUID  # noqa: E402
+
+from sqlalchemy.dialects.postgresql import TSVECTOR  # noqa: E402
+from sqlalchemy.dialects.postgresql import UUID as PgUUID
 from sqlalchemy.ext.compiler import compiles  # noqa: E402
 
 
@@ -56,21 +58,24 @@ _original_uuid_bind = PgUUID.bind_processor
 
 
 @wraps(PgUUID.bind_processor)
-def _patched_uuid_bind(self: object, dialect: object) -> object:
+def _patched_uuid_bind(self: Any, dialect: Any) -> Any:
     original = _original_uuid_bind(self, dialect)
     if original is None:
         return None
+
     def _wrapped(value: object) -> object:
         if isinstance(value, str):
             value = _uuid_mod.UUID(value)
         return original(value)
+
     return _wrapped
 
 
-PgUUID.bind_processor = _patched_uuid_bind  # type: ignore[method-assign]
+PgUUID.bind_processor = _patched_uuid_bind  # pyright: ignore[reportAttributeAccessIssue]
 
 
 # ── Redis 全局 mock ─────────────────────────────────────────────
+
 
 def _make_mock_redis() -> AsyncMock:
     """创建一个行为类似 Redis 的 AsyncMock（用于测试）。"""
@@ -102,19 +107,18 @@ _close_redis_patch.start()
 from app.core.database import Base, get_db  # noqa: E402
 from app.core.security import hash_password  # noqa: E402
 from app.main import app  # noqa: E402
-from app.models.user import User  # noqa: E402
-from app.schemas.auth import UserResponse  # noqa: E402
-
 
 # ── Pydantic + SQLite 兼容补丁 ──────────────────────────────────
-
 from app.models.post import PostStatus  # noqa: E402
+from app.models.user import User  # noqa: E402
+from app.schemas.auth import UserResponse  # noqa: E402
 
 # --- PostStatus：确保 SQLite 返回的字符串被识别为枚举成员 ---
 PostStatus._value2member_map_ = {m.value: m for m in PostStatus}
 
 # SQLAlchemy load 事件：将 status 列从字符串转换为 PostStatus 枚举
 from sqlalchemy import event  # noqa: E402
+
 from app.models.post import Post as PostModel  # noqa: E402
 
 
@@ -141,14 +145,19 @@ def _patched_user_validate(cls, obj, **kwargs):
     elif hasattr(obj, "id") and isinstance(getattr(obj, "created_at", None), _datetime):
         obj = {k: v for k, v in vars(obj).items() if k in cls.model_fields}
         obj["id"] = str(obj["id"]) if isinstance(obj.get("id"), _uuid_mod.UUID) else obj.get("id")
-        obj["created_at"] = str(obj["created_at"]) if isinstance(obj.get("created_at"), _datetime) else obj.get("created_at")
+        obj["created_at"] = (
+            str(obj["created_at"])
+            if isinstance(obj.get("created_at"), _datetime)
+            else obj.get("created_at")
+        )
     return _orig_user_validate(obj, **kwargs)
 
 
-UserResponse.model_validate = _patched_user_validate  # type: ignore[method-assign]
+UserResponse.model_validate = _patched_user_validate  # pyright: ignore[reportAttributeAccessIssue]
 
 
 # ── Pytest 配置 ─────────────────────────────────────────────────
+
 
 @pytest.fixture(scope="session")
 def anyio_backend() -> str:
@@ -174,9 +183,7 @@ async def test_engine() -> AsyncGenerator[Any, None]:
     await engine.dispose()
 
     # 清理测试数据库文件
-    db_file = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "..", "test.db"
-    )
+    db_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "test.db")
     if os.path.exists(db_file):
         os.remove(db_file)
 
@@ -206,9 +213,7 @@ async def test_user(db_session: AsyncSession) -> User:
     """
     from sqlalchemy import select
 
-    result = await db_session.execute(
-        select(User).where(User.username == "testuser")
-    )
+    result = await db_session.execute(select(User).where(User.username == "testuser"))
     existing = result.scalar_one_or_none()
     if existing is not None:
         return existing
@@ -249,9 +254,7 @@ async def client(
 
 
 @pytest_asyncio.fixture
-async def auth_headers(
-    client: AsyncClient, test_user: User
-) -> dict[str, str]:
+async def auth_headers(client: AsyncClient, test_user: User) -> dict[str, str]:
     """通过生成 JWT access token 获取认证头，避免每次都调用 login 端点。"""
     from app.core.security import create_access_token
 

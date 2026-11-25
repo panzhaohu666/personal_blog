@@ -79,8 +79,11 @@ async def get_post(
     """公开文章详情：按 slug 获取已发布文章，同时递增 Redis 阅读计数。"""
     try:
         return await PostService.get_post_by_slug(db, slug, require_published=True)
-    except FileNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="文章不存在")
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="文章不存在",
+        ) from exc
 
 
 # ── 管理后台路由 ───────────────────────────────────────────────
@@ -129,8 +132,11 @@ async def admin_get_post(
     """管理后台获取单篇文章详情（含草稿，用于编辑回填，不递增阅读数）。"""
     try:
         return await PostService.get_admin_post_by_id(db, post_id)
-    except FileNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="文章不存在")
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="文章不存在",
+        ) from exc
 
 
 @admin_post_router.put("/{post_id}", response_model=PostDetail)
@@ -142,8 +148,11 @@ async def update_post(
     """更新文章。"""
     try:
         return await PostService.update_post(db, post_id, data)
-    except FileNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="文章不存在")
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="文章不存在",
+        ) from exc
 
 
 @admin_post_router.delete(
@@ -157,5 +166,8 @@ async def delete_post(
     """删除文章。"""
     try:
         await PostService.delete_post(db, post_id)
-    except FileNotFoundError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="文章不存在")
+    except FileNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="文章不存在",
+        ) from exc

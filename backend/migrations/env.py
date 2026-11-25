@@ -42,7 +42,7 @@ target_metadata = Base.metadata
 settings = get_settings()
 
 # 覆盖 sqlalchemy.url：使用同步版本（Alembic 迁移是同步的）
-config.set_main_option("sqlalchemy.url", settings.SYNC_DATABASE_URL)
+config.set_main_option("sqlalchemy.url", settings.sync_database_url)
 
 # SQLite 兼容：使用批次模式（ALTER TABLE 替代完整重建）
 RENDER_AS_BATCH = settings.DATABASE_IS_SQLITE

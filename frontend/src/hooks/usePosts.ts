@@ -5,14 +5,14 @@
  * - 自动缓存、后台刷新、乐观更新
  * - queryKey 结构: ['posts', { page, size, category, tag, search }]
  */
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import apiClient from '@/api/client';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import apiClient from "@/api/client";
 import type {
   PostDetail,
   PostListResponse,
   PostFormData,
   UploadResponse,
-} from '@/types';
+} from "@/types";
 
 // ======================== 查询 hooks ========================
 
@@ -23,7 +23,7 @@ interface PostListParams {
   category?: string; // category slug
   tag?: string; // tag slug
   search?: string;
-  status?: 'draft' | 'published' | ''; // admin 可用
+  status?: "draft" | "published" | ""; // admin 可用
 }
 
 /**
@@ -31,9 +31,9 @@ interface PostListParams {
  */
 export function usePosts(params: PostListParams = {}) {
   return useQuery<PostListResponse>({
-    queryKey: ['posts', params],
+    queryKey: ["posts", params],
     queryFn: async () => {
-      const { data } = await apiClient.get<PostListResponse>('/api/posts', {
+      const { data } = await apiClient.get<PostListResponse>("/api/posts", {
         params: { ...params, status: undefined },
       });
       return data;
@@ -48,11 +48,11 @@ export function usePosts(params: PostListParams = {}) {
  */
 export function useAdminPosts(params: PostListParams = {}) {
   return useQuery<PostListResponse>({
-    queryKey: ['admin-posts', params],
+    queryKey: ["admin-posts", params],
     queryFn: async () => {
       const { data } = await apiClient.get<PostListResponse>(
-        '/api/admin/posts',
-        { params }
+        "/api/admin/posts",
+        { params },
       );
       return data;
     },
@@ -66,13 +66,13 @@ export function useAdminPosts(params: PostListParams = {}) {
  */
 export function useAdminPost(postId: string | undefined) {
   return useQuery<PostDetail>({
-    queryKey: ['admin-post', postId],
+    queryKey: ["admin-post", postId],
     queryFn: async () => {
       if (postId === undefined) {
-        throw new Error('缺少文章 ID');
+        throw new Error("缺少文章 ID");
       }
       const { data } = await apiClient.get<PostDetail>(
-        `/api/admin/posts/${encodeURIComponent(postId)}`
+        `/api/admin/posts/${encodeURIComponent(postId)}`,
       );
       return data;
     },
@@ -86,10 +86,10 @@ export function useAdminPost(postId: string | undefined) {
  */
 export function usePost(slug: string) {
   return useQuery<PostDetail>({
-    queryKey: ['post', slug],
+    queryKey: ["post", slug],
     queryFn: async () => {
       const { data } = await apiClient.get<PostDetail>(
-        `/api/posts/${encodeURIComponent(slug)}`
+        `/api/posts/${encodeURIComponent(slug)}`,
       );
       return data;
     },
@@ -105,15 +105,15 @@ export function useCreatePost() {
   return useMutation<PostDetail, Error, PostFormData>({
     mutationFn: async (formData: PostFormData) => {
       const { data } = await apiClient.post<PostDetail>(
-        '/api/admin/posts',
-        formData
+        "/api/admin/posts",
+        formData,
       );
       return data;
     },
     onSuccess: () => {
       // 创建成功 → 刷新文章列表缓存
-      queryClient.invalidateQueries({ queryKey: ['admin-posts'] });
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.invalidateQueries({ queryKey: ["admin-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
   });
 }
@@ -121,22 +121,18 @@ export function useCreatePost() {
 /** 更新文章（管理员） */
 export function useUpdatePost() {
   const queryClient = useQueryClient();
-  return useMutation<
-    PostDetail,
-    Error,
-    { id: string; data: PostFormData }
-  >({
+  return useMutation<PostDetail, Error, { id: string; data: PostFormData }>({
     mutationFn: async ({ id, data: formData }) => {
       const { data } = await apiClient.put<PostDetail>(
         `/api/admin/posts/${id}`,
-        formData
+        formData,
       );
       return data;
     },
     onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['admin-posts'] });
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
-      queryClient.invalidateQueries({ queryKey: ['post', variables.id] });
+      queryClient.invalidateQueries({ queryKey: ["admin-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.invalidateQueries({ queryKey: ["post", variables.id] });
     },
   });
 }
@@ -149,8 +145,8 @@ export function useDeletePost() {
       await apiClient.delete(`/api/admin/posts/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin-posts'] });
-      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.invalidateQueries({ queryKey: ["admin-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
   });
 }
@@ -160,11 +156,11 @@ export function useUploadImage() {
   return useMutation<UploadResponse, Error, File>({
     mutationFn: async (file: File) => {
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append("file", file);
       const { data } = await apiClient.post<UploadResponse>(
-        '/api/admin/upload',
+        "/api/admin/upload",
         formData,
-        { headers: { 'Content-Type': 'multipart/form-data' } }
+        { headers: { "Content-Type": "multipart/form-data" } },
       );
       return data;
     },

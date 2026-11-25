@@ -6,9 +6,9 @@ import {
   useMemo,
   useState,
   type ReactNode,
-} from 'react';
-import apiClient from '@/api/client';
-import type { LoginRequest, TokenResponse, User } from '@/types';
+} from "react";
+import apiClient from "@/api/client";
+import type { LoginRequest, TokenResponse, User } from "@/types";
 
 /**
  * Auth 上下文 —— 全局 JWT 认证状态管理
@@ -48,19 +48,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
    * 如果有，调用 /api/auth/me 验证 token 是否仍然有效
    */
   useEffect(() => {
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem("access_token");
     if (!token) {
       setIsLoading(false);
       return;
     }
 
     apiClient
-      .get<User>('/api/auth/me')
+      .get<User>("/api/auth/me")
       .then((response) => setUser(response.data))
       .catch(() => {
         // Token 无效或已过期
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
         setUser(null);
       })
       .finally(() => setIsLoading(false));
@@ -70,33 +70,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
    * 登录：POST /api/auth/login
    * 成功后保存 token 到 localStorage
    */
-  const login = useCallback(async (credentials: LoginRequest): Promise<void> => {
-    const response = await apiClient.post<TokenResponse>(
-      '/api/auth/login',
-      credentials
-    );
-    const { access_token, refresh_token } = response.data;
-    localStorage.setItem('access_token', access_token);
-    localStorage.setItem('refresh_token', refresh_token);
+  const login = useCallback(
+    async (credentials: LoginRequest): Promise<void> => {
+      const response = await apiClient.post<TokenResponse>(
+        "/api/auth/login",
+        credentials,
+      );
+      const { access_token, refresh_token } = response.data;
+      localStorage.setItem("access_token", access_token);
+      localStorage.setItem("refresh_token", refresh_token);
 
-    // 登录成功后立即获取用户信息
-    const userResponse = await apiClient.get<User>('/api/auth/me');
-    setUser(userResponse.data);
-  }, []);
+      // 登录成功后立即获取用户信息
+      const userResponse = await apiClient.get<User>("/api/auth/me");
+      setUser(userResponse.data);
+    },
+    [],
+  );
 
   /**
    * 登出：清除本地状态
    */
   const logout = useCallback((): void => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
     setUser(null);
-    window.location.href = '/login';
+    window.location.href = "/login";
   }, []);
 
   const value = useMemo<AuthContextType>(
     () => ({ user, isAuthenticated: user !== null, isLoading, login, logout }),
-    [user, isLoading, login, logout]
+    [user, isLoading, login, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -111,7 +114,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth 必须在 AuthProvider 内部使用');
+    throw new Error("useAuth 必须在 AuthProvider 内部使用");
   }
   return context;
 }

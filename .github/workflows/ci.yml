@@ -55,15 +55,21 @@ jobs:
 
       - name: Lint (ruff)
         working-directory: backend
-        run: uv run ruff check app/ tests/ scripts/
+        run: uv run ruff check app/ tests/
 
       - name: Format check (ruff format)
         working-directory: backend
-        run: uv run ruff format --check app/ tests/ scripts/
+        run: uv run ruff format --check app/ tests/
+
+      - name: Check migration script
+        working-directory: backend
+        run: |
+          uv run ruff check ../scripts/migrate_data.py
+          uv run ruff format --check ../scripts/migrate_data.py
 
       - name: Type check (basedpyright)
         working-directory: backend
-        run: uv run basedpyright app/ tests/
+        run: uv run basedpyright --level error app/ tests/
 
       - name: Run migrations
         working-directory: backend

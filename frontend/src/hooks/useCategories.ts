@@ -1,18 +1,18 @@
 /**
  * 分类 & 标签数据获取 hooks
  */
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import apiClient from '@/api/client';
-import type { Category, Tag } from '@/types';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import apiClient from "@/api/client";
+import type { Category, Tag } from "@/types";
 
 // ======================== 分类 ========================
 
 /** 获取分类列表 */
 export function useCategories() {
   return useQuery<Category[]>({
-    queryKey: ['categories'],
+    queryKey: ["categories"],
     queryFn: async () => {
-      const { data } = await apiClient.get<Category[]>('/api/categories');
+      const { data } = await apiClient.get<Category[]>("/api/categories");
       return data;
     },
     staleTime: 0,
@@ -24,14 +24,13 @@ export function useCreateCategory() {
   const queryClient = useQueryClient();
   return useMutation<Category, Error, { name: string }>({
     mutationFn: async ({ name }) => {
-      const { data } = await apiClient.post<Category>(
-        '/api/admin/categories',
-        { name }
-      );
+      const { data } = await apiClient.post<Category>("/api/admin/categories", {
+        name,
+      });
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
     },
   });
 }
@@ -44,7 +43,7 @@ export function useDeleteCategory() {
       await apiClient.delete(`/api/admin/categories/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
     },
   });
 }
@@ -54,9 +53,9 @@ export function useDeleteCategory() {
 /** 获取标签列表 */
 export function useTags() {
   return useQuery<Tag[]>({
-    queryKey: ['tags'],
+    queryKey: ["tags"],
     queryFn: async () => {
-      const { data } = await apiClient.get<Tag[]>('/api/tags');
+      const { data } = await apiClient.get<Tag[]>("/api/tags");
       return data;
     },
     staleTime: 0,
@@ -68,11 +67,11 @@ export function useCreateTag() {
   const queryClient = useQueryClient();
   return useMutation<Tag, Error, { name: string }>({
     mutationFn: async ({ name }) => {
-      const { data } = await apiClient.post<Tag>('/api/admin/tags', { name });
+      const { data } = await apiClient.post<Tag>("/api/admin/tags", { name });
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tags'] });
+      queryClient.invalidateQueries({ queryKey: ["tags"] });
     },
   });
 }
@@ -85,7 +84,7 @@ export function useDeleteTag() {
       await apiClient.delete(`/api/admin/tags/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tags'] });
+      queryClient.invalidateQueries({ queryKey: ["tags"] });
     },
   });
 }

@@ -36,6 +36,7 @@ router = APIRouter()
 
 # ── 端点 ────────────────────────────────────────────────────────
 
+
 @router.post(
     "/login",
     response_model=TokenResponse,
@@ -111,7 +112,7 @@ async def me(
 async def change_password(
     body: ChangePasswordRequest,
     current_user: User = Depends(get_current_user),
-) -> dict:
+) -> dict[str, str]:
     """修改当前用户登录密码，需提供旧密码验证。
 
     新密码与确认密码必须一致。
@@ -123,14 +124,12 @@ async def change_password(
         )
 
     try:
-        await LoginService.change_password(
-            current_user, body.old_password, body.new_password
-        )
+        await LoginService.change_password(current_user, body.old_password, body.new_password)
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e),
-        )
+        ) from e
 
     return {"message": "密码修改成功"}
 
@@ -153,7 +152,7 @@ async def change_email(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e),
-        )
+        ) from e
 
     return UserResponse(
         id=str(current_user.id),

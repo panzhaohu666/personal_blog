@@ -21,15 +21,15 @@ from __future__ import annotations
 import pytest
 from httpx import AsyncClient
 
-
 # ── 辅助函数 ────────────────────────────────────────────────────
+
 
 def _make_post_payload(
     title: str = "Test Article",
     body: str = "This is a test article body.",
     status: str = "published",
-    **kwargs,
-) -> dict:
+    **kwargs: object,
+) -> dict[str, object]:
     """快速构造创建文章的 JSON payload。"""
     return {
         "title": title,
@@ -42,10 +42,9 @@ def _make_post_payload(
 
 # ── 创建文章 ────────────────────────────────────────────────────
 
+
 @pytest.mark.asyncio
-async def test_create_post_draft(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_create_post_draft(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """创建草稿文章应返回 201 且 status 为 draft。"""
     response = await client.post(
         "/api/admin/posts",
@@ -62,9 +61,7 @@ async def test_create_post_draft(
 
 
 @pytest.mark.asyncio
-async def test_create_post_published(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_create_post_published(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """创建已发布文章应返回 201。"""
     response = await client.post(
         "/api/admin/posts",
@@ -104,6 +101,7 @@ async def test_create_post_unauthorized(client: AsyncClient) -> None:
 
 # ── 文章列表（公开） ────────────────────────────────────────────
 
+
 @pytest.mark.asyncio
 async def test_list_posts_empty(client: AsyncClient) -> None:
     """无文章时列表应返回空数组。"""
@@ -115,9 +113,7 @@ async def test_list_posts_empty(client: AsyncClient) -> None:
 
 
 @pytest.mark.asyncio
-async def test_list_posts_only_published(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_list_posts_only_published(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """公开列表只应返回已发布文章，草稿不可见。"""
     # 创建一篇草稿和一篇已发布文章
     await client.post(
@@ -138,9 +134,7 @@ async def test_list_posts_only_published(
 
 
 @pytest.mark.asyncio
-async def test_list_posts_pagination(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_list_posts_pagination(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """分页参数应正确生效。"""
     # 创建 5 篇已发布文章
     for i in range(5):
@@ -160,9 +154,7 @@ async def test_list_posts_pagination(
 
 
 @pytest.mark.asyncio
-async def test_search_posts(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_search_posts(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """搜索关键词应过滤匹配的文章。"""
     await client.post(
         "/api/admin/posts",
@@ -191,10 +183,9 @@ async def test_search_posts(
 
 # ── 文章详情（公开） ────────────────────────────────────────────
 
+
 @pytest.mark.asyncio
-async def test_get_post_by_slug(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_get_post_by_slug(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """通过 slug 获取已发布文章详情应返回 200。"""
     create_resp = await client.post(
         "/api/admin/posts",
@@ -241,10 +232,9 @@ async def test_get_post_not_found(client: AsyncClient) -> None:
 
 # ── 管理端获取详情 ──────────────────────────────────────────────
 
+
 @pytest.mark.asyncio
-async def test_admin_get_post_detail(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_admin_get_post_detail(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """管理端通过 ID 获取文章详情（含草稿）应返回 200。"""
     create_resp = await client.post(
         "/api/admin/posts",
@@ -259,6 +249,7 @@ async def test_admin_get_post_detail(
 
 
 # ── 管理端列表 ──────────────────────────────────────────────────
+
 
 @pytest.mark.asyncio
 async def test_admin_list_includes_drafts(
@@ -283,14 +274,13 @@ async def test_admin_list_includes_drafts(
 
 # ── 更新文章 ────────────────────────────────────────────────────
 
+
 @pytest.mark.asyncio
 @pytest.mark.xfail(
     reason="aiosqlite greenlet incompatibility with SA refresh() after UPDATE",
     strict=False,
 )
-async def test_update_post(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_update_post(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """更新文章标题和正文应返回 200 且内容已变更。"""
     create_resp = await client.post(
         "/api/admin/posts",
@@ -310,11 +300,8 @@ async def test_update_post(
     assert data["body"] == "New body"
 
 
-
 @pytest.mark.asyncio
-async def test_update_post_not_found(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_update_post_not_found(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """更新不存在的文章应返回 404。"""
     response = await client.put(
         "/api/admin/posts/00000000-0000-0000-0000-000000000000",
@@ -326,10 +313,9 @@ async def test_update_post_not_found(
 
 # ── 删除文章 ────────────────────────────────────────────────────
 
+
 @pytest.mark.asyncio
-async def test_delete_post(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_delete_post(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """删除文章应返回 204，后续获取返回 404。"""
     create_resp = await client.post(
         "/api/admin/posts",
@@ -338,9 +324,7 @@ async def test_delete_post(
     )
     post_id = create_resp.json()["id"]
 
-    response = await client.delete(
-        f"/api/admin/posts/{post_id}", headers=auth_headers
-    )
+    response = await client.delete(f"/api/admin/posts/{post_id}", headers=auth_headers)
     assert response.status_code == 204
 
     # 删除后获取应 404
@@ -349,9 +333,7 @@ async def test_delete_post(
 
 
 @pytest.mark.asyncio
-async def test_delete_post_not_found(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_delete_post_not_found(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """删除不存在的文章应返回 404。"""
     response = await client.delete(
         "/api/admin/posts/00000000-0000-0000-0000-000000000000",
@@ -362,10 +344,9 @@ async def test_delete_post_not_found(
 
 # ── 过滤：按分类 / 标签 ─────────────────────────────────────────
 
+
 @pytest.mark.asyncio
-async def test_filter_posts_by_category(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_filter_posts_by_category(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """按分类 slug 过滤应只返回该分类的文章。"""
     # 创建分类
     cat_resp = await client.post(
@@ -402,9 +383,7 @@ async def test_filter_posts_by_category(
 
 
 @pytest.mark.asyncio
-async def test_filter_posts_by_tag(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_filter_posts_by_tag(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """按标签 slug 过滤应只返回该标签的文章。"""
     # 创建标签
     tag_resp = await client.post(

@@ -1,7 +1,7 @@
-import { useState, type FormEvent } from 'react';
-import { Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { useState, type FormEvent } from "react";
+import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 interface SearchBarProps {
   /** 初始搜索词（从 URL query 恢复） */
@@ -13,7 +13,7 @@ interface SearchBarProps {
 /**
  * 搜索栏 —— 输入框 + 搜索按钮，回车或点击按钮触发 onSearch
  */
-export function SearchBar({ initial = '', onSearch }: SearchBarProps) {
+export function SearchBar({ initial = "", onSearch }: SearchBarProps) {
   const [value, setValue] = useState(initial);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {

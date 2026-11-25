@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import math
 import uuid
 
@@ -16,7 +17,7 @@ from sqlalchemy.orm import selectinload
 from app.core.redis import get_redis
 from app.models import make_slug
 from app.models.category import Category
-from app.models.post import Post, PostStatus, post_tags
+from app.models.post import Post, PostStatus
 from app.models.tag import Tag
 from app.schemas.post import (
     CategoryResponse,
@@ -82,10 +83,7 @@ class PostService:
         redis = await get_redis()
         keys = [f"post:{pid}:views" for pid in post_ids]
         values = await redis.mget(keys)
-        return {
-            pid: int(v) if v else 0
-            for pid, v in zip(post_ids, values)
-        }
+        return {pid: int(v) if v else 0 for pid, v in zip(post_ids, values, strict=False)}
 
     # ── 公开接口 ────────────────────────────────────────────────
 
@@ -151,10 +149,7 @@ class PostService:
         post_ids = [p.id for p in posts]
         view_counts = await PostService._get_view_counts(post_ids)
 
-        items = [
-            _post_to_summary(p, view_count=view_counts.get(p.id, 0))
-            for p in posts
-        ]
+        items = [_post_to_summary(p, view_count=view_counts.get(p.id, 0)) for p in posts]
         pages = max(math.ceil(total / size), 1)
 
         return PostListResponse(
@@ -173,9 +168,13 @@ class PostService:
         require_published: bool = True,
     ) -> PostDetail:
         """根据 slug 获取文章详情，同时原子递增 Redis 阅读数。"""
-        stmt = select(Post).where(Post.slug == slug).options(
-            selectinload(Post.category),
-            selectinload(Post.tags),
+        stmt = (
+            select(Post)
+            .where(Post.slug == slug)
+            .options(
+                selectinload(Post.category),
+                selectinload(Post.tags),
+            )
         )
         if require_published:
             stmt = stmt.where(Post.status == PostStatus.PUBLISHED)
@@ -265,10 +264,8 @@ class PostService:
 
         tag_ids: list[int] = []
         for tid in data.tag_ids:
-            try:
+            with contextlib.suppress(ValueError, TypeError):
                 tag_ids.append(int(tid))
-            except (ValueError, TypeError):
-                pass
 
         post = Post(
             title=data.title,
@@ -342,10 +339,8 @@ class PostService:
         # tags 关联更新
         tag_ids: list[int] = []
         for tid in data.tag_ids:
-            try:
+            with contextlib.suppress(ValueError, TypeError):
                 tag_ids.append(int(tid))
-            except (ValueError, TypeError):
-                pass
 
         if tag_ids:
             result = await db.execute(select(Tag).where(Tag.id.in_(tag_ids)))

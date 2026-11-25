@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
-import type { ReactNode } from 'react';
+import { Link } from "react-router-dom";
+import type { ReactNode } from "react";
 
 /**
  * 博客前端公共布局

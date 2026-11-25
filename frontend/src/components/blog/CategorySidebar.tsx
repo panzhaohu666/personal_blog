@@ -1,9 +1,9 @@
-import { Link } from 'react-router-dom';
-import { FolderOpen } from 'lucide-react';
-import { useCategories } from '@/hooks/useCategories';
-import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
-import { cn } from '@/lib/utils';
+import { Link } from "react-router-dom";
+import { FolderOpen } from "lucide-react";
+import { useCategories } from "@/hooks/useCategories";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 interface CategorySidebarProps {
   /** 当前激活的分类 slug（用于高亮） */
@@ -25,14 +25,14 @@ export function CategorySidebar({
 
   const linkClass = (active: boolean) =>
     cn(
-      'flex items-center justify-between rounded-lg px-2.5 py-2 text-sm text-[var(--color-text-soft)] transition-all duration-200',
+      "flex items-center justify-between rounded-lg px-2.5 py-2 text-sm text-[var(--color-text-soft)] transition-all duration-200",
       active
-        ? 'bg-[var(--color-primary-200)] font-medium text-[var(--color-primary-700)]'
-        : 'hover:bg-[var(--color-primary-200)] hover:pl-4 hover:text-[var(--color-primary-dark)]'
+        ? "bg-[var(--color-primary-200)] font-medium text-[var(--color-primary-700)]"
+        : "hover:bg-[var(--color-primary-200)] hover:pl-4 hover:text-[var(--color-primary-dark)]",
     );
 
   return (
-    <aside className={cn('w-full shrink-0 lg:w-[280px]', className)}>
+    <aside className={cn("w-full shrink-0 lg:w-[280px]", className)}>
       <div className="rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-bg-surface)] p-6 shadow-card">
         <h3 className="flex items-center gap-2 font-serif text-[16.5px] font-bold tracking-[0.02em] text-[var(--color-text-primary)]">
           <FolderOpen className="size-4 text-[var(--color-primary)]" />
@@ -51,7 +51,7 @@ export function CategorySidebar({
             <Link
               to="/blog"
               className={linkClass(activeSlug === undefined)}
-              aria-current={activeSlug === undefined ? 'page' : undefined}
+              aria-current={activeSlug === undefined ? "page" : undefined}
             >
               <span>全部文章</span>
               <span className="rounded-full bg-[#F2EADB] px-2 py-0.5 text-xs text-[var(--color-text-muted)] transition-colors group-hover:bg-[var(--color-primary)] group-hover:text-[var(--color-bg-surface)]">
@@ -64,11 +64,8 @@ export function CategorySidebar({
                 <Link
                   key={cat.id}
                   to={`/blog/category/${cat.slug}`}
-                  className={cn(
-                    linkClass(active),
-                    'group hover:pl-4'
-                  )}
-                  aria-current={active ? 'page' : undefined}
+                  className={cn(linkClass(active), "group hover:pl-4")}
+                  aria-current={active ? "page" : undefined}
                 >
                   <span>{cat.name}</span>
                   <span className="rounded-full bg-[#F2EADB] px-2 py-0.5 text-xs text-[var(--color-text-muted)] transition-colors group-hover:bg-[var(--color-primary)] group-hover:text-[var(--color-bg-surface)]">

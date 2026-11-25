@@ -56,7 +56,10 @@ async def upload_image(
     if file_size > MAX_SIZE_BYTES:
         raise HTTPException(
             status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
-            detail=f"文件大小 {file_size} 字节超过上限 {MAX_SIZE_BYTES} 字节（{settings.MAX_UPLOAD_SIZE_MB}MB）",
+            detail=(
+                f"文件大小 {file_size} 字节超过上限 {MAX_SIZE_BYTES} 字节"
+                f"（{settings.MAX_UPLOAD_SIZE_MB}MB）"
+            ),
         )
 
     # 生成存储路径: UPLOAD_DIR/uploads/YYYY/MM/uuid-original.ext

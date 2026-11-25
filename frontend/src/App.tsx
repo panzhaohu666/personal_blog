@@ -1,10 +1,10 @@
-import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { Toaster } from '@/components/ui/sonner';
-import { AuthProvider } from '@/hooks/useAuth';
-import ProtectedRoute from '@/components/ProtectedRoute';
+import { lazy, Suspense } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/hooks/useAuth";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 /**
  * 应用根组件
@@ -29,20 +29,20 @@ import ProtectedRoute from '@/components/ProtectedRoute';
  */
 
 // 懒加载页面组件 —— 按需加载，减小首屏体积
-const BlogListPage = lazy(() => import('@/pages/BlogList'));
-const BlogPostPage = lazy(() => import('@/pages/BlogPost'));
-const BlogCategoryPage = lazy(() => import('@/pages/BlogCategory'));
-const LoginPage = lazy(() => import('@/pages/Login'));
-const NotFoundPage = lazy(() => import('@/pages/NotFound'));
+const BlogListPage = lazy(() => import("@/pages/BlogList"));
+const BlogPostPage = lazy(() => import("@/pages/BlogPost"));
+const BlogCategoryPage = lazy(() => import("@/pages/BlogCategory"));
+const LoginPage = lazy(() => import("@/pages/Login"));
+const NotFoundPage = lazy(() => import("@/pages/NotFound"));
 
 // 管理后台页面（懒加载）
-const AdminLayout = lazy(() => import('@/pages/admin/AdminLayout'));
-const AdminDashboard = lazy(() => import('@/pages/admin/AdminDashboard'));
-const AdminPostList = lazy(() => import('@/pages/admin/AdminPostList'));
-const AdminPostEditor = lazy(() => import('@/pages/admin/AdminPostEditor'));
-const AdminCategories = lazy(() => import('@/pages/admin/AdminCategories'));
-const AdminTags = lazy(() => import('@/pages/admin/AdminTags'));
-const AdminSystem = lazy(() => import('@/pages/admin/AdminSystem'));
+const AdminLayout = lazy(() => import("@/pages/admin/AdminLayout"));
+const AdminDashboard = lazy(() => import("@/pages/admin/AdminDashboard"));
+const AdminPostList = lazy(() => import("@/pages/admin/AdminPostList"));
+const AdminPostEditor = lazy(() => import("@/pages/admin/AdminPostEditor"));
+const AdminCategories = lazy(() => import("@/pages/admin/AdminCategories"));
+const AdminTags = lazy(() => import("@/pages/admin/AdminTags"));
+const AdminSystem = lazy(() => import("@/pages/admin/AdminSystem"));
 
 /**
  * 页面加载中的占位组件
@@ -104,7 +104,10 @@ export default function App() {
                 <Route index element={<AdminDashboard />} />
                 <Route path="posts" element={<AdminPostList />} />
                 <Route path="posts/new" element={<AdminPostEditor />} />
-                <Route path="posts/:postId/edit" element={<AdminPostEditor />} />
+                <Route
+                  path="posts/:postId/edit"
+                  element={<AdminPostEditor />}
+                />
                 <Route path="categories" element={<AdminCategories />} />
                 <Route path="tags" element={<AdminTags />} />
                 <Route path="system" element={<AdminSystem />} />
@@ -124,9 +127,9 @@ export default function App() {
           position="top-right"
           toastOptions={{
             style: {
-              background: 'var(--color-bg-surface)',
-              color: 'var(--color-text-primary)',
-              border: '1px solid var(--color-border-default)',
+              background: "var(--color-bg-surface)",
+              color: "var(--color-text-primary)",
+              border: "1px solid var(--color-border-default)",
             },
           }}
         />

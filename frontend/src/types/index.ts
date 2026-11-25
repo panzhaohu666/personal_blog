@@ -40,7 +40,7 @@ export interface PostSummary {
   tags: Tag[];
   excerpt: string;
   image_url: string | null;
-  status: 'draft' | 'published';
+  status: "draft" | "published";
   created_at: string; // ISO 8601
   updated_at: string; // ISO 8601
   view_count: number;
@@ -65,7 +65,7 @@ export interface PostListResponse {
 /** 搜索结果响应 */
 export interface SearchResult {
   query: string;
-  engine: 'ilike' | 'tsvector' | 'elasticsearch';
+  engine: "ilike" | "tsvector" | "elasticsearch";
   took_ms: number;
   items: PostSummary[];
   total: number;
@@ -110,7 +110,7 @@ export interface PostFormData {
   tag_ids?: string[];
   excerpt?: string;
   body: string;
-  status: 'draft' | 'published';
+  status: "draft" | "published";
   image_url?: string;
 }
 

@@ -15,8 +15,8 @@ from __future__ import annotations
 import pytest
 from httpx import AsyncClient
 
-
 # ── POST /api/auth/login ────────────────────────────────────────
+
 
 @pytest.mark.asyncio
 async def test_login_success(client: AsyncClient, test_user) -> None:
@@ -61,6 +61,7 @@ async def test_login_missing_fields(client: AsyncClient) -> None:
 
 
 # ── POST /api/auth/refresh ──────────────────────────────────────
+
 
 @pytest.mark.asyncio
 async def test_refresh_token(client: AsyncClient, test_user) -> None:
@@ -110,6 +111,7 @@ async def test_refresh_invalid_token(client: AsyncClient) -> None:
 
 # ── GET /api/auth/me ────────────────────────────────────────────
 
+
 @pytest.mark.asyncio
 async def test_me_authenticated(
     client: AsyncClient, test_user, auth_headers: dict[str, str]
@@ -142,6 +144,7 @@ async def test_me_with_invalid_token(client: AsyncClient) -> None:
 
 # ── PUT /api/auth/password ─────────────────────────────────────
 
+
 @pytest.mark.asyncio
 async def test_change_password_success(
     client: AsyncClient, test_user, auth_headers: dict[str, str]
@@ -168,9 +171,7 @@ async def test_change_password_success(
 
 
 @pytest.mark.asyncio
-async def test_change_password_wrong_old(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_change_password_wrong_old(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """错误的旧密码应返回 400。"""
     response = await client.put(
         "/api/auth/password",
@@ -185,9 +186,7 @@ async def test_change_password_wrong_old(
 
 
 @pytest.mark.asyncio
-async def test_change_password_mismatch(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_change_password_mismatch(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """新密码与确认密码不一致应返回 400。"""
     response = await client.put(
         "/api/auth/password",
@@ -218,6 +217,7 @@ async def test_change_password_unauthorized(client: AsyncClient) -> None:
 
 # ── PUT /api/auth/email ────────────────────────────────────────
 
+
 @pytest.mark.asyncio
 async def test_change_email_success(
     client: AsyncClient, test_user, auth_headers: dict[str, str]
@@ -245,12 +245,12 @@ async def test_change_email_duplicate(
         headers=auth_headers,
     )
     # 再次修改为相同邮箱应失败
-    response = await client.put(
+    await client.put(
         "/api/auth/email",
         json={"email": "test@example.com"},
         headers=auth_headers,
     )
-    # test@example.com 是 test_user 的原始邮箱，回改回去... 
+    # test@example.com 是 test_user 的原始邮箱，回改回去...
     # 但那个邮箱也属于 test_user 自己（修改后 test_user 的邮箱变了。
     # 这里我们再创建一个用户来测试冲突。
     pass  # 该测试在当前数据条件下难以构造冲突，跳过。

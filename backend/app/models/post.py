@@ -2,11 +2,14 @@
 文章数据模型（含多对多标签关联表）
 """
 
+# pyright: reportImportCycles=false
+
 from __future__ import annotations
 
 import enum
 import uuid
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import (
     Column,
@@ -23,10 +26,14 @@ from sqlalchemy.dialects.postgresql import TSVECTOR, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
-from app.models import make_slug
+from app.models.slug import make_slug
+
+if TYPE_CHECKING:
+    from app.models.category import Category
+    from app.models.tag import Tag
 
 
-class PostStatus(str, enum.Enum):
+class PostStatus(enum.StrEnum):
     """文章发布状态。"""
 
     DRAFT = "draft"
@@ -55,6 +62,7 @@ post_tags = Table(
 
 # ── Post 模型 ──────────────────────────────────────────────────
 
+
 class Post(Base):
     """文章表。"""
 
@@ -74,13 +82,9 @@ class Post(Base):
     )
     excerpt: Mapped[str | None] = mapped_column(Text, nullable=True)
     body: Mapped[str] = mapped_column(Text, nullable=False)
-    search_vector: Mapped[str | None] = mapped_column(
-        TSVECTOR, nullable=True, deferred=True
-    )
+    search_vector: Mapped[str | None] = mapped_column(TSVECTOR, nullable=True, deferred=True)
     image_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
-    status: Mapped[PostStatus] = mapped_column(
-        String(10), default=PostStatus.DRAFT, nullable=False
-    )
+    status: Mapped[PostStatus] = mapped_column(String(10), default=PostStatus.DRAFT, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
@@ -92,10 +96,10 @@ class Post(Base):
     )
 
     # ── 关系 ───────────────────────────────────────────────────
-    category: Mapped["Category | None"] = relationship(  # noqa: F821
+    category: Mapped[Category | None] = relationship(
         back_populates="posts",
     )
-    tags: Mapped[list["Tag"]] = relationship(  # noqa: F821
+    tags: Mapped[list[Tag]] = relationship(
         secondary=post_tags,
         back_populates="posts",
     )
@@ -105,6 +109,7 @@ class Post(Base):
 
 
 # ── 事件监听 ───────────────────────────────────────────────────
+
 
 @event.listens_for(Post, "before_insert")
 @event.listens_for(Post, "before_update")

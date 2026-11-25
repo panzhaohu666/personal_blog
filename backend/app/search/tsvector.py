@@ -58,11 +58,7 @@ class TSVectorSearchEngine(SearchEngine):
 
         stmt = (
             select(Post)
-            .where(
-                Post.search_vector.op("@@")(
-                    func.plainto_tsquery(text("'simple'"), query)
-                )
-            )
+            .where(Post.search_vector.op("@@")(func.plainto_tsquery(text("'simple'"), query)))
             .options(
                 selectinload(Post.category),
                 selectinload(Post.tags),

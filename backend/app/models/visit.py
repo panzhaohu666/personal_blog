@@ -18,9 +18,7 @@ class VisitLog(Base):
     """页面访问记录 — 轻量级 PV 分析。"""
 
     __tablename__ = "visit_logs"
-    __table_args__ = (
-        Index("ix_visit_logs_post_id_visited_at", "post_id", "visited_at"),
-    )
+    __table_args__ = (Index("ix_visit_logs_post_id_visited_at", "post_id", "visited_at"),)
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),

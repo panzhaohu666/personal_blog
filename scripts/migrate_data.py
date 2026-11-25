@@ -21,7 +21,7 @@ import os
 import sqlite3
 import sys
 import uuid
-from datetime import datetime, timezone, timedelta
+from datetime import UTC, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -62,8 +62,8 @@ DEFAULT_ADMIN_EMAIL = "admin@test.com"
 #   Post 使用 UUID PK                        → new_id: uuid.UUID
 #   User 直接创建新管理员，不需要映射
 
-cat_id_map: dict[int, int] = {}   # old_django_category_id → new_pg_category_id
-tag_id_map: dict[int, int] = {}   # old_django_tag_id      → new_pg_tag_id
+cat_id_map: dict[int, int] = {}  # old_django_category_id → new_pg_category_id
+tag_id_map: dict[int, int] = {}  # old_django_tag_id      → new_pg_tag_id
 post_id_map: dict[int, uuid.UUID] = {}  # old_django_post_id → new_pg_post_uuid
 
 
@@ -101,7 +101,6 @@ def get_admin_password() -> str:
     return password
 
 
-
 # ═══════════════════════════════════════════════════════════════
 # 各实体迁移逻辑
 # ═══════════════════════════════════════════════════════════════
@@ -131,11 +130,15 @@ async def migrate_users(
         return 0
 
     if dry_run:
-        logger.info("  [DRY-RUN] 将创建用户: username=%s, email=%s", DEFAULT_ADMIN_USERNAME, DEFAULT_ADMIN_EMAIL)
+        logger.info(
+            "  [DRY-RUN] 将创建用户: username=%s, email=%s",
+            DEFAULT_ADMIN_USERNAME,
+            DEFAULT_ADMIN_EMAIL,
+        )
         return 0
 
     password_hash = gen_bcrypt_hash(get_admin_password())
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
 
     user = User(
         username=DEFAULT_ADMIN_USERNAME,
@@ -168,9 +171,7 @@ async def migrate_categories(
     logger.info("── 迁移分类 ──")
     imported = 0
 
-    cur = sqlite_conn.execute(
-        "SELECT id, name, slug FROM blog_category ORDER BY id"
-    )
+    cur = sqlite_conn.execute("SELECT id, name, slug FROM blog_category ORDER BY id")
     rows = cur.fetchall()
 
     for django_id, name, slug in rows:
@@ -218,9 +219,7 @@ async def migrate_tags(
     logger.info("── 迁移标签 ──")
     imported = 0
 
-    cur = sqlite_conn.execute(
-        "SELECT id, name, slug FROM blog_tag ORDER BY id"
-    )
+    cur = sqlite_conn.execute("SELECT id, name, slug FROM blog_tag ORDER BY id")
     rows = cur.fetchall()
 
     for django_id, name, slug in rows:
@@ -301,7 +300,11 @@ async def migrate_posts(
             mapped_cat = cat_id_map.get(dj_cat_id) if dj_cat_id else None
             logger.info(
                 "  [DRY-RUN] 将创建文章: title=%s, slug=%s, category_id=%s→%s, status=%s",
-                title, slug, dj_cat_id, mapped_cat, status_str,
+                title,
+                slug,
+                dj_cat_id,
+                mapped_cat,
+                status_str,
             )
             continue
 
@@ -333,7 +336,10 @@ async def migrate_posts(
         imported += 1
         logger.info(
             "  ✓ 创建文章: id=%s, title=%s, slug=%s, status=%s",
-            post.id, title, slug, status_enum.value,
+            post.id,
+            title,
+            slug,
+            status_enum.value,
         )
 
     return imported
@@ -356,9 +362,7 @@ async def migrate_post_tags(
     logger.info("── 迁移文章-标签关联 ──")
     imported = 0
 
-    cur = sqlite_conn.execute(
-        "SELECT post_id, tag_id FROM blog_post_tags ORDER BY post_id, tag_id"
-    )
+    cur = sqlite_conn.execute("SELECT post_id, tag_id FROM blog_post_tags ORDER BY post_id, tag_id")
     rows = cur.fetchall()
 
     for dj_post_id, dj_tag_id in rows:
@@ -384,7 +388,10 @@ async def migrate_post_tags(
         if dry_run:
             logger.info(
                 "  [DRY-RUN] 将创建关联: post_id=%d→%s, tag_id=%d→%d",
-                dj_post_id, new_post_id, dj_tag_id, new_tag_id,
+                dj_post_id,
+                new_post_id,
+                dj_tag_id,
+                new_tag_id,
             )
             continue
 

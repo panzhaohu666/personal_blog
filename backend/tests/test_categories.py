@@ -13,8 +13,8 @@ from __future__ import annotations
 import pytest
 from httpx import AsyncClient
 
-
 # ── GET /api/categories ─────────────────────────────────────────
+
 
 @pytest.mark.asyncio
 async def test_list_categories_empty(client: AsyncClient) -> None:
@@ -25,9 +25,7 @@ async def test_list_categories_empty(client: AsyncClient) -> None:
 
 
 @pytest.mark.asyncio
-async def test_list_categories_with_data(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_list_categories_with_data(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """创建分类后列表应返回分类数据。"""
     await client.post(
         "/api/admin/categories",
@@ -50,10 +48,9 @@ async def test_list_categories_with_data(
 
 # ── POST /api/admin/categories ─────────────────────────────────
 
+
 @pytest.mark.asyncio
-async def test_create_category(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_create_category(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """创建分类应返回 201 并包含正确字段。"""
     response = await client.post(
         "/api/admin/categories",
@@ -69,9 +66,7 @@ async def test_create_category(
 
 
 @pytest.mark.asyncio
-async def test_create_category_duplicate(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_create_category_duplicate(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """创建同名分类应返回 409 Conflict。"""
     await client.post(
         "/api/admin/categories",
@@ -100,10 +95,9 @@ async def test_create_category_unauthorized(client: AsyncClient) -> None:
 
 # ── DELETE /api/admin/categories/{id} ──────────────────────────
 
+
 @pytest.mark.asyncio
-async def test_delete_category(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_delete_category(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """删除存在的分类应返回 204。"""
     create_resp = await client.post(
         "/api/admin/categories",
@@ -112,9 +106,7 @@ async def test_delete_category(
     )
     cat_id = create_resp.json()["id"]
 
-    response = await client.delete(
-        f"/api/admin/categories/{cat_id}", headers=auth_headers
-    )
+    response = await client.delete(f"/api/admin/categories/{cat_id}", headers=auth_headers)
     assert response.status_code == 204
 
     # 删除后列表不应包含该分类
@@ -124,13 +116,9 @@ async def test_delete_category(
 
 
 @pytest.mark.asyncio
-async def test_delete_category_not_found(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_delete_category_not_found(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """删除不存在的分类应返回 404。"""
-    response = await client.delete(
-        "/api/admin/categories/99999", headers=auth_headers
-    )
+    response = await client.delete("/api/admin/categories/99999", headers=auth_headers)
     assert response.status_code == 404
 
 

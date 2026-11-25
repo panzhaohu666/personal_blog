@@ -14,8 +14,8 @@ FastAPI 应用入口
 from __future__ import annotations
 
 import logging
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -32,12 +32,11 @@ settings = get_settings()
 
 # ── 生命周期 ──────────────────────────────────────────────────
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """应用生命周期管理：启动时初始化资源，关闭时释放资源。"""
-    logger.info(
-        f"🚀 {settings.APP_NAME} v{settings.APP_VERSION} 启动中..."
-    )
+    logger.info(f"🚀 {settings.APP_NAME} v{settings.APP_VERSION} 启动中...")
 
     # 安全检查：SECRET_KEY 必须已设置
     if not settings.SECRET_KEY.get_secret_value():
@@ -47,9 +46,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     # 验证数据库连接
     try:
         async with engine.connect() as conn:
-            await conn.execute(
-                __import__("sqlalchemy").text("SELECT 1")
-            )
+            await conn.execute(__import__("sqlalchemy").text("SELECT 1"))
         logger.info("✓ 数据库连接正常")
     except Exception as e:
         logger.critical(f"❌ 数据库连接失败: {e}")
@@ -87,6 +84,7 @@ app.add_middleware(
 
 
 # ── 健康检查 ──────────────────────────────────────────────────
+
 
 @app.get("/api/health", tags=["系统"])
 async def health_check() -> JSONResponse:

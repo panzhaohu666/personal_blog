@@ -1,65 +1,143 @@
-import { useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
-import { useAdminPosts, useDeletePost } from '@/hooks/usePosts';
-import { SearchBar } from '@/components/SearchBar';
+import { useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { useAdminPosts, useDeletePost } from "@/hooks/usePosts";
+import { SearchBar } from "@/components/SearchBar";
 
-function fmtDate(iso: string) { return iso ? new Date(iso).toLocaleDateString('zh-CN') : ''; }
+function fmtDate(iso: string) {
+  return iso ? new Date(iso).toLocaleDateString("zh-CN") : "";
+}
 
 export default function AdminPostList() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const page = Math.max(1, Number(searchParams.get('page')) || 1);
-  const search = searchParams.get('search') || '';
+  const page = Math.max(1, Number(searchParams.get("page")) || 1);
+  const search = searchParams.get("search") || "";
   const [confirmId, setConfirmId] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
-  const { data, isLoading, refetch } = useAdminPosts({ page, size: 20, search: search || undefined });
+  const { data, isLoading, refetch } = useAdminPosts({
+    page,
+    size: 20,
+    search: search || undefined,
+  });
   const deletePost = useDeletePost();
 
   const handleDelete = async () => {
     if (!confirmId) return;
     try {
       await deletePost.mutateAsync(confirmId);
-      setMsg('文章已删除'); setConfirmId(null); refetch();
-    } catch (err: any) { setMsg('删除失败: ' + (err?.response?.data?.detail || '请重试')); }
+      setMsg("文章已删除");
+      setConfirmId(null);
+      refetch();
+    } catch (err: any) {
+      setMsg("删除失败: " + (err?.response?.data?.detail || "请重试"));
+    }
   };
 
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="font-serif text-2xl font-bold text-[#2B2620] dark:text-gray-100">文章管理</h1>
-        <Link to="/admin/posts/new" className="rounded-xl bg-[#B9812F] px-4 py-2 text-sm text-white hover:bg-[#8F5E1D]">+ 写文章</Link>
+        <h1 className="font-serif text-2xl font-bold text-[#2B2620] dark:text-gray-100">
+          文章管理
+        </h1>
+        <Link
+          to="/admin/posts/new"
+          className="rounded-xl bg-[#B9812F] px-4 py-2 text-sm text-white hover:bg-[#8F5E1D]"
+        >
+          + 写文章
+        </Link>
       </div>
-      {msg && <div className="mb-4 rounded-xl bg-green-50 dark:bg-green-900/40 px-4 py-3 text-sm text-green-700 dark:text-green-300">{msg} <button onClick={() => setMsg(null)} className="ml-2 font-bold">×</button></div>}
-      <SearchBar defaultValue={search} placeholder="搜索文章标题..." onSearch={(q) => { const next = new URLSearchParams(); if (q) next.set('search', q); setSearchParams(next, { replace: true }); }} className="mb-4" />
+      {msg && (
+        <div className="mb-4 rounded-xl bg-green-50 dark:bg-green-900/40 px-4 py-3 text-sm text-green-700 dark:text-green-300">
+          {msg}{" "}
+          <button onClick={() => setMsg(null)} className="ml-2 font-bold">
+            ×
+          </button>
+        </div>
+      )}
+      <SearchBar
+        defaultValue={search}
+        placeholder="搜索文章标题..."
+        onSearch={(q) => {
+          const next = new URLSearchParams();
+          if (q) next.set("search", q);
+          setSearchParams(next, { replace: true });
+        }}
+        className="mb-4"
+      />
       {isLoading ? (
-        <div className="p-10 text-center text-[#8E8375] dark:text-gray-400">加载中...</div>
+        <div className="p-10 text-center text-[#8E8375] dark:text-gray-400">
+          加载中...
+        </div>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-[#E9DFCE] dark:border-gray-700 bg-[#FFFDF8] dark:bg-gray-800">
           <table className="w-full text-left text-sm">
             <thead className="border-b border-[#E9DFCE] dark:border-gray-700 bg-[#F7F2E9] dark:bg-gray-900 text-[#5F5649] dark:text-gray-300">
               <tr>
-                <th className="px-4 py-3 font-medium">标题</th><th className="px-4 py-3 font-medium w-20">封面</th><th className="px-4 py-3 font-medium">分类</th><th className="px-4 py-3 font-medium">状态</th><th className="px-4 py-3 font-medium">日期</th><th className="px-4 py-3 font-medium">操作</th>
+                <th className="px-4 py-3 font-medium">标题</th>
+                <th className="px-4 py-3 font-medium w-20">封面</th>
+                <th className="px-4 py-3 font-medium">分类</th>
+                <th className="px-4 py-3 font-medium">状态</th>
+                <th className="px-4 py-3 font-medium">日期</th>
+                <th className="px-4 py-3 font-medium">操作</th>
               </tr>
             </thead>
             <tbody>
               {data?.items.length === 0 ? (
-                <tr><td colSpan={6} className="px-4 py-12 text-center text-[#8E8375] dark:text-gray-400">暂无文章</td></tr>
+                <tr>
+                  <td
+                    colSpan={6}
+                    className="px-4 py-12 text-center text-[#8E8375] dark:text-gray-400"
+                  >
+                    暂无文章
+                  </td>
+                </tr>
               ) : (
                 data?.items.map((post) => (
-                  <tr key={post.id} className="border-b border-[#E9DFCE] dark:border-gray-700 last:border-0 hover:bg-[#F7F2E9] dark:hover:bg-gray-700">
-                    <td className="px-4 py-3 font-medium text-[#2B2620] dark:text-gray-100">{post.title}</td>
-                    <td className="px-4 py-3">{post.image_url ? <img src={post.image_url} alt="" className="h-10 w-16 rounded object-cover" /> : <span className="text-[#8E8375] text-xs">-</span>}</td>
-                    <td className="px-4 py-3 text-[#5F5649] dark:text-gray-300">{post.category?.name || '-'}</td>
+                  <tr
+                    key={post.id}
+                    className="border-b border-[#E9DFCE] dark:border-gray-700 last:border-0 hover:bg-[#F7F2E9] dark:hover:bg-gray-700"
+                  >
+                    <td className="px-4 py-3 font-medium text-[#2B2620] dark:text-gray-100">
+                      {post.title}
+                    </td>
                     <td className="px-4 py-3">
-                      <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${post.status === 'published' ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300' : 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300'}`}>
-                        {post.status === 'published' ? '已发布' : '草稿'}
+                      {post.image_url ? (
+                        <img
+                          src={post.image_url}
+                          alt=""
+                          className="h-10 w-16 rounded object-cover"
+                        />
+                      ) : (
+                        <span className="text-[#8E8375] text-xs">-</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-[#5F5649] dark:text-gray-300">
+                      {post.category?.name || "-"}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${post.status === "published" ? "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300" : "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300"}`}
+                      >
+                        {post.status === "published" ? "已发布" : "草稿"}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-[#8E8375] dark:text-gray-400">{fmtDate(post.created_at)}</td>
+                    <td className="px-4 py-3 text-[#8E8375] dark:text-gray-400">
+                      {fmtDate(post.created_at)}
+                    </td>
                     <td className="px-4 py-3">
                       <div className="flex gap-2">
-                        <Link to={`/admin/posts/${post.id}/edit`} className="text-[#B9812F] hover:underline">编辑</Link>
-                        <button onClick={() => setConfirmId(post.id)} className="text-red-500 hover:underline">删除</button>
+                        <Link
+                          to={`/admin/posts/${post.id}/edit`}
+                          className="text-[#B9812F] hover:underline"
+                        >
+                          编辑
+                        </Link>
+                        <button
+                          onClick={() => setConfirmId(post.id)}
+                          className="text-red-500 hover:underline"
+                        >
+                          删除
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -70,12 +148,31 @@ export default function AdminPostList() {
         </div>
       )}
       {confirmId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => setConfirmId(null)}>
-          <div className="w-full max-w-sm rounded-xl bg-[#FFFDF8] dark:bg-gray-800 p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
-            <p className="mb-4 text-[#2B2620] dark:text-gray-100">确定要删除这篇文章吗？此操作不可撤销。</p>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+          onClick={() => setConfirmId(null)}
+        >
+          <div
+            className="w-full max-w-sm rounded-xl bg-[#FFFDF8] dark:bg-gray-800 p-6 shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="mb-4 text-[#2B2620] dark:text-gray-100">
+              确定要删除这篇文章吗？此操作不可撤销。
+            </p>
             <div className="flex justify-end gap-2">
-              <button onClick={() => setConfirmId(null)} className="rounded-xl border border-[#E9DFCE] dark:border-gray-700 px-4 py-2 text-sm text-[#5F5649] dark:text-gray-300">取消</button>
-              <button onClick={handleDelete} disabled={deletePost.isPending} className="rounded-xl bg-red-500 px-4 py-2 text-sm text-white hover:bg-red-600">删除</button>
+              <button
+                onClick={() => setConfirmId(null)}
+                className="rounded-xl border border-[#E9DFCE] dark:border-gray-700 px-4 py-2 text-sm text-[#5F5649] dark:text-gray-300"
+              >
+                取消
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deletePost.isPending}
+                className="rounded-xl bg-red-500 px-4 py-2 text-sm text-white hover:bg-red-600"
+              >
+                删除
+              </button>
             </div>
           </div>
         </div>

@@ -1,14 +1,14 @@
-import { Link } from 'react-router-dom';
-import { format, parseISO } from 'date-fns';
-import { zhCN } from 'date-fns/locale';
-import { Eye } from 'lucide-react';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import type { PostSummary } from '@/types';
+import { Link } from "react-router-dom";
+import { format, parseISO } from "date-fns";
+import { zhCN } from "date-fns/locale";
+import { Eye } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import type { PostSummary } from "@/types";
 
 function formatDate(iso: string): string {
-  return format(parseISO(iso), 'yyyy年MM月dd日', { locale: zhCN });
+  return format(parseISO(iso), "yyyy年MM月dd日", { locale: zhCN });
 }
 
 /**

@@ -13,8 +13,8 @@ from __future__ import annotations
 import pytest
 from httpx import AsyncClient
 
-
 # ── GET /api/tags ───────────────────────────────────────────────
+
 
 @pytest.mark.asyncio
 async def test_list_tags_empty(client: AsyncClient) -> None:
@@ -25,9 +25,7 @@ async def test_list_tags_empty(client: AsyncClient) -> None:
 
 
 @pytest.mark.asyncio
-async def test_list_tags_with_data(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_list_tags_with_data(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """创建标签后列表应返回标签数据。"""
     await client.post(
         "/api/admin/tags",
@@ -50,10 +48,9 @@ async def test_list_tags_with_data(
 
 # ── POST /api/admin/tags ───────────────────────────────────────
 
+
 @pytest.mark.asyncio
-async def test_create_tag(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_create_tag(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """创建标签应返回 201 并包含正确字段。"""
     response = await client.post(
         "/api/admin/tags",
@@ -69,9 +66,7 @@ async def test_create_tag(
 
 
 @pytest.mark.asyncio
-async def test_create_tag_duplicate(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_create_tag_duplicate(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """创建同名标签应返回 409 Conflict。"""
     await client.post(
         "/api/admin/tags",
@@ -100,10 +95,9 @@ async def test_create_tag_unauthorized(client: AsyncClient) -> None:
 
 # ── DELETE /api/admin/tags/{id} ────────────────────────────────
 
+
 @pytest.mark.asyncio
-async def test_delete_tag(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_delete_tag(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """删除存在的标签应返回 204。"""
     create_resp = await client.post(
         "/api/admin/tags",
@@ -112,9 +106,7 @@ async def test_delete_tag(
     )
     tag_id = create_resp.json()["id"]
 
-    response = await client.delete(
-        f"/api/admin/tags/{tag_id}", headers=auth_headers
-    )
+    response = await client.delete(f"/api/admin/tags/{tag_id}", headers=auth_headers)
     assert response.status_code == 204
 
     # 删除后列表不应包含该标签
@@ -124,13 +116,9 @@ async def test_delete_tag(
 
 
 @pytest.mark.asyncio
-async def test_delete_tag_not_found(
-    client: AsyncClient, auth_headers: dict[str, str]
-) -> None:
+async def test_delete_tag_not_found(client: AsyncClient, auth_headers: dict[str, str]) -> None:
     """删除不存在的标签应返回 404。"""
-    response = await client.delete(
-        "/api/admin/tags/99999", headers=auth_headers
-    )
+    response = await client.delete("/api/admin/tags/99999", headers=auth_headers)
     assert response.status_code == 404
 
 

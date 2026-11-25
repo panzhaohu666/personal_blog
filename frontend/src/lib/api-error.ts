@@ -1,5 +1,5 @@
-import { AxiosError } from 'axios';
-import type { ApiError } from '@/types';
+import { AxiosError } from "axios";
+import type { ApiError } from "@/types";
 
 /**
  * 从任意错误对象中提取可读的 API 错误信息
@@ -9,11 +9,11 @@ import type { ApiError } from '@/types';
  */
 export function getApiErrorDetail(
   error: unknown,
-  fallback = '操作失败，请稍后重试'
+  fallback = "操作失败，请稍后重试",
 ): string {
   if (error instanceof AxiosError) {
     const data = error.response?.data as ApiError | undefined;
-    if (typeof data?.detail === 'string' && data.detail.length > 0) {
+    if (typeof data?.detail === "string" && data.detail.length > 0) {
       return data.detail;
     }
   }

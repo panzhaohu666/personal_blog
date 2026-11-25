@@ -22,7 +22,8 @@ from datetime import UTC, datetime, timedelta
 from typing import Any
 
 import bcrypt
-from jose import JWTError, jwt
+import jwt
+from jwt import InvalidTokenError
 
 from app.core.config import get_settings
 
@@ -64,7 +65,8 @@ def create_access_token(
     """
     to_encode = data.copy()
     expire = datetime.now(UTC) + (
-        expires_delta if expires_delta is not None
+        expires_delta
+        if expires_delta is not None
         else timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
     to_encode.update({"exp": expire})
@@ -86,8 +88,7 @@ def create_refresh_token(
     """
     to_encode = data.copy()
     expire = datetime.now(UTC) + (
-        expires_delta if expires_delta is not None
-        else timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
+        expires_delta if expires_delta is not None else timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
     )
     to_encode.update({"exp": expire, "type": "refresh"})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
@@ -103,9 +104,7 @@ def decode_access_token(token: str) -> dict[str, Any] | None:
         解码后的 payload 字典，验证失败返回 None。
     """
     try:
-        payload: dict[str, Any] = jwt.decode(
-            token, SECRET_KEY, algorithms=[ALGORITHM]
-        )
+        payload: dict[str, Any] = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
-    except JWTError:
+    except InvalidTokenError:
         return None

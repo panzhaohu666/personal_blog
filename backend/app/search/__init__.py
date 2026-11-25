@@ -48,7 +48,5 @@ def get_search_engine(engine_name: str) -> SearchEngine:
     engine_class = SEARCH_ENGINES.get(engine_name)
     if engine_class is None:
         available = ", ".join(SEARCH_ENGINES.keys())
-        raise ValueError(
-            f"Unknown search engine: {engine_name!r}. Available: {available}"
-        )
+        raise ValueError(f"Unknown search engine: {engine_name!r}. Available: {available}")
     return engine_class()

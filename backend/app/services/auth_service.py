@@ -45,9 +45,7 @@ class LoginService:
 
         同时检查用户 is_active 状态，已禁用的用户无法登录。
         """
-        result = await session.execute(
-            select(User).where(User.username == username)
-        )
+        result = await session.execute(select(User).where(User.username == username))
         user = result.scalar_one_or_none()
         if user is None or not verify_password(password, user.hashed_password):
             return None
@@ -56,7 +54,7 @@ class LoginService:
         return user
 
     @staticmethod
-    def create_tokens(user: User) -> dict:
+    def create_tokens(user: User) -> dict[str, str]:
         """为用户创建 access_token 和 refresh_token。
 
         每个令牌对共享一个 jti（JWT ID），用于 refresh token rotation
@@ -68,12 +66,8 @@ class LoginService:
         """
         jti = str(uuid.uuid4())
         token_data = {"sub": str(user.id), "username": user.username}
-        access_token = create_access_token(
-            {**token_data, "jti": jti, "type": "access"}
-        )
-        refresh_token = create_refresh_token(
-            {**token_data, "jti": jti, "type": "refresh"}
-        )
+        access_token = create_access_token({**token_data, "jti": jti, "type": "access"})
+        refresh_token = create_refresh_token({**token_data, "jti": jti, "type": "refresh"})
         return {
             "access_token": access_token,
             "refresh_token": refresh_token,
@@ -84,7 +78,7 @@ class LoginService:
     async def refresh_tokens(
         refresh_token: str,
         session: AsyncSession,
-    ) -> dict | None:
+    ) -> dict[str, str] | None:
         """验证 refresh token 并颁发新令牌对（rotation）。
 
         流程：
@@ -120,9 +114,7 @@ class LoginService:
         if user_id is None:
             return None
 
-        result = await session.execute(
-            select(User).where(User.id == user_id)
-        )
+        result = await session.execute(select(User).where(User.id == user_id))
         user = result.scalar_one_or_none()
         if user is None or not user.is_active:
             return None
@@ -155,9 +147,7 @@ class LoginService:
         Raises:
             ValueError: 邮箱已被其他用户占用。
         """
-        result = await session.execute(
-            select(User).where(User.email == email, User.id != user.id)
-        )
+        result = await session.execute(select(User).where(User.email == email, User.id != user.id))
         if result.scalar_one_or_none() is not None:
             raise ValueError("该邮箱已被使用")
         user.email = email

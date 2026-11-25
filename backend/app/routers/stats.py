@@ -6,8 +6,9 @@
 
 from __future__ import annotations
 
+import contextlib
 import uuid
-from datetime import date, datetime, timezone
+from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func, select
@@ -65,10 +66,8 @@ async def stats_overview(
         for key in keys:
             val = await redis.get(key)
             if val is not None:
-                try:
+                with contextlib.suppress(ValueError, TypeError):
                     total_views += int(val)
-                except (ValueError, TypeError):
-                    pass
         if cursor == 0:
             break
 
@@ -111,8 +110,8 @@ async def post_stats(
     view_count = int(raw) if raw else 0
 
     # 今日访问量（visit_logs 表）
-    now = datetime.now(timezone.utc)
-    today_start = datetime(now.year, now.month, now.day, tzinfo=timezone.utc)
+    now = datetime.now(UTC)
+    today_start = datetime(now.year, now.month, now.day, tzinfo=UTC)
     today_result = await db.execute(
         select(func.count(VisitLog.id)).where(
             VisitLog.post_id == post_id,
