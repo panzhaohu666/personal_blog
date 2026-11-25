@@ -98,13 +98,15 @@ graph TB
 | http://localhost:8000/api/docs | Swagger API 文档 |
 | http://localhost:8000/api/redoc | ReDoc API 文档 |
 
-### 默认账号
+### 管理员账号
 
-| 用户名 | 密码 |
-|--------|------|
-| `admin` | `admin123` |
+首次执行 `./scripts/start.sh` 时会创建管理员账号。默认用户名为 `admin`，密码通过 `ADMIN_PASSWORD` 环境变量或 `.env` 提供，并强制要求至少 12 个字符。未提供密码时，启动脚本会随机生成一次并在创建成功时显示，请立即保存。
 
-> ⚠️ 这组凭据只用于本地首次启动和演示。部署到公网前必须修改为强密码；不要把带有默认管理员的实例直接暴露到公网。
+```bash
+ADMIN_PASSWORD='replace-with-a-strong-password' ./scripts/start.sh
+```
+
+> ⚠️ 仓库不再提供固定默认密码。部署到公网前还应修改 `SECRET_KEY` 和数据库密码，并启用 HTTPS。
 
 ### 本地开发
 

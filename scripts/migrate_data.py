@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import logging
+import os
 import sqlite3
 import sys
 import uuid
@@ -53,7 +54,6 @@ logger = logging.getLogger("migrate")
 DJANGO_DB = _PROJECT_ROOT / "db.sqlite3"
 DJANGO_TIMEZONE = timezone(timedelta(hours=8), name="Asia/Shanghai")
 DEFAULT_ADMIN_USERNAME = "admin"
-DEFAULT_ADMIN_PASSWORD = "admin123"
 DEFAULT_ADMIN_EMAIL = "admin@test.com"
 
 # ── 映射表（old int ID → new ID/UUID） ────────────────────────
@@ -93,6 +93,14 @@ def gen_bcrypt_hash(password: str) -> str:
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
 
+def get_admin_password() -> str:
+    """从环境变量读取管理员密码，拒绝空值和弱密码。"""
+    password = os.getenv("ADMIN_PASSWORD", "")
+    if len(password) < 12:
+        raise RuntimeError("请设置至少 12 个字符的 ADMIN_PASSWORD 环境变量")
+    return password
+
+
 
 # ═══════════════════════════════════════════════════════════════
 # 各实体迁移逻辑
@@ -106,7 +114,7 @@ async def migrate_users(
     """创建管理员用户（idempotent：基于 username 去重）。
 
     Django 使用 pbkdf2_sha256 哈希，新系统使用 bcrypt。
-    我们直接创建一个新的 admin 用户，密码为 'admin123' 的 bcrypt 哈希。
+    我们直接创建一个新的管理员用户，密码来自 ADMIN_PASSWORD 环境变量。
 
     Returns:
         imported: 实际插入的用户数（0 或 1）
@@ -126,7 +134,7 @@ async def migrate_users(
         logger.info("  [DRY-RUN] 将创建用户: username=%s, email=%s", DEFAULT_ADMIN_USERNAME, DEFAULT_ADMIN_EMAIL)
         return 0
 
-    password_hash = gen_bcrypt_hash(DEFAULT_ADMIN_PASSWORD)
+    password_hash = gen_bcrypt_hash(get_admin_password())
     now = datetime.now(timezone.utc)
 
     user = User(
