@@ -168,12 +168,45 @@ jobs:
         env:
           DATABASE_URL: postgresql+asyncpg://blog:test_password@localhost:5432/blog_test
           REDIS_URL: redis://localhost:6379/0
-          SECRET_KEY: e2e-test-secret
+          SECRET_KEY: ci-e2e-secret-key-with-at-least-32-bytes
           DEBUG: "false"
         run: |
           uv run alembic upgrade head
+          uv run python - <<'PY'
+          import asyncio
+
+          from sqlalchemy import select
+
+          from app.core.database import async_session_factory
+          from app.core.security import hash_password
+          from app.models.user import User
+
+
+          async def seed_user() -> None:
+              async with async_session_factory() as session:
+                  existing = await session.scalar(
+                      select(User).where(User.username == "testuser")
+                  )
+                  if existing is None:
+                      session.add(
+                          User(
+                              username="testuser",
+                              email="testuser@example.com",
+                              hashed_password=hash_password("testpass123"),
+                              is_active=True,
+                          )
+                      )
+                      await session.commit()
+
+
+          asyncio.run(seed_user())
+          PY
           uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 &
-          sleep 3
+          for _ in $(seq 1 30); do
+            curl -fsS http://localhost:8000/api/health >/dev/null && break
+            sleep 1
+          done
+          curl -fsS http://localhost:8000/api/health
 
       - uses: actions/setup-node@v4
         with:
@@ -192,5 +225,5 @@ jobs:
       - name: Run E2E tests
         working-directory: frontend
         env:
-          VITE_API_BASE_URL: http://localhost:8000
+          VITE_API_BASE_URL: http://localhost:8000/api
         run: npx playwright test
