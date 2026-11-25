@@ -82,7 +82,7 @@ jobs:
         env:
           DATABASE_URL: postgresql+asyncpg://blog:test_password@localhost:5432/blog_test
           REDIS_URL: redis://localhost:6379/0
-          SECRET_KEY: ci-test-secret-key
+          SECRET_KEY: ci-test-secret-key-with-at-least-32-bytes
           DEBUG: "false"
         run: uv run pytest -v --cov=app --cov-report=term-missing
 
