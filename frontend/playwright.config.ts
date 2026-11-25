@@ -39,7 +39,7 @@ export default defineConfig({
     timeout: 120000,
     env: {
       VITE_API_BASE_URL:
-        process.env.VITE_API_BASE_URL ?? "http://localhost:8000/api",
+        process.env.VITE_API_BASE_URL ?? "http://localhost:8000",
     },
   },
 });

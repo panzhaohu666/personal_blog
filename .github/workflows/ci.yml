@@ -223,7 +223,7 @@ jobs:
           REDIS_URL: redis://localhost:6379/0
           SECRET_KEY: ci-e2e-secret-key-with-at-least-32-bytes
           DEBUG: "false"
-          VITE_API_BASE_URL: http://localhost:8000/api
+          VITE_API_BASE_URL: http://localhost:8000
         run: |
           (cd ../backend && exec uv run uvicorn app.main:app --host 0.0.0.0 --port 8000) &
           backend_pid=$!
